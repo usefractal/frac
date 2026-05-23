@@ -1,5 +1,13 @@
+import { existsSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Plugin, ViteDevServer } from "vite";
+import {
+  assertUniqueAtomNames,
+  type DiscoveredAtom,
+  scanAtomsSync,
+  writeAtomsDts,
+} from "./scan-atoms.js";
 import {
   assertUniqueViewNames,
   type DiscoveredView,
@@ -12,11 +20,16 @@ import { hasDefaultExport } from "./validate-view.js";
 
 const VIRTUAL_PREFIX = "/_skybridge/view/";
 const VIRTUAL_MODULE_PREFIX = "\0skybridge:view:";
+const ATOMS_REGISTRY_ID = "virtual:skybridge/atoms";
+const ATOMS_REGISTRY_RESOLVED_ID = "\0skybridge:atoms";
+const RENDER_ATOMS_VIEW_NAME = "__skybridge_render_atoms";
 
 /** Options for the {@link skybridge} Vite plugin. */
 export interface SkybridgePluginOptions {
   /** Directory scanned for view modules. Defaults to `"src/views"`. */
   viewsDir?: string;
+  /** Directory scanned for atom components. Defaults to `"src/atoms"`. */
+  atomsDir?: string;
 }
 
 function buildVirtualEntry(viewFilePath: string): string {
@@ -27,6 +40,56 @@ function buildVirtualEntry(viewFilePath: string): string {
     `import { createElement } from "react";`,
     `mountView(createElement(Component));`,
   ].join("\n");
+}
+
+function buildAtomRegistryEntry(atoms: DiscoveredAtom[]): string {
+  const imports = atoms
+    .map((atom, index) => {
+      return `import Atom${index} from "${atom.filePath.replace(/\\/g, "/")}";`;
+    })
+    .join("\n");
+
+  const entries = atoms
+    .map((atom, index) => `  ${JSON.stringify(atom.name)}: Atom${index},`)
+    .join("\n");
+
+  const names = atoms.map((atom) => JSON.stringify(atom.name)).join(", ");
+
+  return [
+    imports,
+    "",
+    "export const atomRegistry = {",
+    entries,
+    "};",
+    `export const atomNames = [${names}];`,
+    "",
+  ].join("\n");
+}
+
+function buildRenderAtomsEntry(): string {
+  const renderAtomsViewPath = getInternalWebModulePath("render-atoms-view");
+  return [
+    `import { mountView } from "skybridge/web";`,
+    `import { createElement } from "react";`,
+    `import { RenderAtomsView } from "${renderAtomsViewPath}";`,
+    `import { atomRegistry } from "${ATOMS_REGISTRY_ID}";`,
+    "",
+    "mountView(createElement(RenderAtomsView, { atomRegistry }));",
+    "",
+  ].join("\n");
+}
+
+function getInternalWebModulePath(name: string): string {
+  const sourcePath = fileURLToPath(
+    new URL(`../internal/${name}.tsx`, import.meta.url),
+  );
+  if (existsSync(sourcePath)) {
+    return sourcePath.replace(/\\/g, "/");
+  }
+  return fileURLToPath(new URL(`../internal/${name}.js`, import.meta.url)).replace(
+    /\\/g,
+    "/",
+  );
 }
 
 function getViewEntryPattern(viewsDir: string): RegExp {
@@ -64,31 +127,44 @@ function getViewEntryPattern(viewsDir: string): RegExp {
  */
 export function skybridge(options?: SkybridgePluginOptions): Plugin {
   const rawViewsDir = options?.viewsDir ?? "src/views";
+  const rawAtomsDir = options?.atomsDir ?? "src/atoms";
   let resolvedViewsDir: string;
+  let resolvedAtomsDir: string;
   let projectRoot: string;
   let viewMap = new Map<string, DiscoveredView>();
+  let atoms: DiscoveredAtom[] = [];
   let viewEntryPattern: RegExp;
 
   return {
     name: "skybridge",
     enforce: "pre",
     // Read by `skybridge build` to resolve viewsDir before `tsc -b` runs.
-    api: { viewsDir: rawViewsDir },
+    api: { viewsDir: rawViewsDir, atomsDir: rawAtomsDir },
 
     config(config) {
       projectRoot = config.root || process.cwd();
       resolvedViewsDir = isAbsolute(rawViewsDir)
         ? rawViewsDir
         : resolve(projectRoot, rawViewsDir);
+      resolvedAtomsDir = isAbsolute(rawAtomsDir)
+        ? rawAtomsDir
+        : resolve(projectRoot, rawAtomsDir);
       viewEntryPattern = getViewEntryPattern(resolvedViewsDir);
 
       const views = discoverViewsSync(resolvedViewsDir);
       viewMap = new Map(views.map((v) => [v.name, v]));
       writeViewsDts(projectRoot, views);
+      const { valid } = scanAtomsSync(resolvedAtomsDir);
+      assertUniqueAtomNames(valid);
+      atoms = valid;
+      writeAtomsDts(projectRoot, atoms);
 
       const input: Record<string, string> = {};
       for (const view of views) {
         input[view.name] = `${VIRTUAL_PREFIX}${view.name}`;
+      }
+      if (atoms.length > 0) {
+        input[RENDER_ATOMS_VIEW_NAME] = `${VIRTUAL_PREFIX}${RENDER_ATOMS_VIEW_NAME}`;
       }
 
       return {
@@ -135,9 +211,12 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
     },
 
     resolveId(id) {
+      if (id === ATOMS_REGISTRY_ID) {
+        return ATOMS_REGISTRY_RESOLVED_ID;
+      }
       if (id.startsWith(VIRTUAL_PREFIX)) {
         const name = id.slice(VIRTUAL_PREFIX.length);
-        if (viewMap.has(name)) {
+        if (viewMap.has(name) || name === RENDER_ATOMS_VIEW_NAME) {
           return `${VIRTUAL_MODULE_PREFIX}${name}`;
         }
       }
@@ -145,8 +224,14 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
     },
 
     load(id) {
+      if (id === ATOMS_REGISTRY_RESOLVED_ID) {
+        return buildAtomRegistryEntry(atoms);
+      }
       if (id.startsWith(VIRTUAL_MODULE_PREFIX)) {
         const name = id.slice(VIRTUAL_MODULE_PREFIX.length);
+        if (name === RENDER_ATOMS_VIEW_NAME) {
+          return buildRenderAtomsEntry();
+        }
         const view = viewMap.get(name);
         if (view) {
           return buildVirtualEntry(view.filePath);
@@ -161,11 +246,15 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
         resolvedViewsDir = isAbsolute(rawViewsDir)
           ? rawViewsDir
           : resolve(root, rawViewsDir);
+        resolvedAtomsDir = isAbsolute(rawAtomsDir)
+          ? rawAtomsDir
+          : resolve(root, rawAtomsDir);
         projectRoot = root;
         viewEntryPattern = getViewEntryPattern(resolvedViewsDir);
       }
 
       server.watcher.add(resolvedViewsDir);
+      server.watcher.add(resolvedAtomsDir);
       // Track which view files we've already warned about so a rescan
       // triggered by an unrelated edit doesn't re-emit the same warning.
       let knownInvalid = new Set<string>();
@@ -213,6 +302,44 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
       server.watcher.on("add", rescan);
       server.watcher.on("change", rescan);
       server.watcher.on("unlink", rescan);
+
+      let knownInvalidAtoms = new Set<string>();
+      const rescanAtoms = () => {
+        try {
+          const { valid, invalid } = scanAtomsSync(resolvedAtomsDir);
+          const nextInvalid = new Set(invalid.map((a) => a.filePath));
+
+          for (const filePath of nextInvalid) {
+            if (!knownInvalidAtoms.has(filePath)) {
+              server.config.logger.warn(
+                `[skybridge] atom file "${relative(projectRoot, filePath)}" is missing a default export — it won't be registered until fixed.`,
+              );
+            }
+          }
+          for (const filePath of knownInvalidAtoms) {
+            if (!nextInvalid.has(filePath)) {
+              server.config.logger.info(
+                `[skybridge] atom file "${relative(projectRoot, filePath)}" resolved.`,
+              );
+            }
+          }
+          knownInvalidAtoms = nextInvalid;
+
+          assertUniqueAtomNames(valid);
+          atoms = valid;
+          writeAtomsDts(projectRoot, valid);
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          server.config.logger.error(
+            `[skybridge] atom rescan failed: ${message}`,
+          );
+        }
+      };
+
+      rescanAtoms();
+      server.watcher.on("add", rescanAtoms);
+      server.watcher.on("change", rescanAtoms);
+      server.watcher.on("unlink", rescanAtoms);
     },
 
     async transform(code, id) {

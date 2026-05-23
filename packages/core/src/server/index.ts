@@ -17,6 +17,10 @@ export {
 export { FileRef } from "./file-ref.js";
 export type {
   AnyToolRegistry,
+  AnyAtomRegistry,
+  AtomNames,
+  AtomProps,
+  InferAtoms,
   InferTools,
   ToolInput,
   ToolNames,
@@ -33,6 +37,10 @@ export type {
   McpWildcard,
 } from "./middleware.js";
 export type {
+  AtomConfig,
+  AtomDef,
+  AtomName,
+  AtomNameRegistry,
   HandlerContent,
   KnownToolMeta,
   McpServerTypes,

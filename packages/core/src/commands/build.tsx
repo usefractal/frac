@@ -5,9 +5,13 @@ import { Box, render, Text } from "ink";
 import { useEffect } from "react";
 import { Header } from "../cli/header.js";
 import { type CommandStep, useExecuteSteps } from "../cli/use-execute-steps.js";
+import { scanAndWriteAtomsDts } from "../web/plugin/scan-atoms.js";
 import { scanAndWriteViewsDts } from "../web/plugin/scan-views.js";
 
-async function resolveViewsDir(root: string): Promise<string | undefined> {
+async function resolveSkybridgeDirs(root: string): Promise<{
+  viewsDir?: string;
+  atomsDir?: string;
+}> {
   const { loadConfigFromFile } = await import("vite");
   const loaded = await loadConfigFromFile(
     { command: "build", mode: "production" },
@@ -17,10 +21,13 @@ async function resolveViewsDir(root: string): Promise<string | undefined> {
 
   const isPluginCandidate = (
     value: unknown,
-  ): value is { name?: string; api?: { viewsDir?: string } } =>
+  ): value is { name?: string; api?: { viewsDir?: string; atomsDir?: string } } =>
     typeof value === "object" && value !== null;
 
-  const plugins: Array<{ name?: string; api?: { viewsDir?: string } }> = [];
+  const plugins: Array<{
+    name?: string;
+    api?: { viewsDir?: string; atomsDir?: string };
+  }> = [];
   const walk = (value: unknown) => {
     if (Array.isArray(value)) {
       value.forEach(walk);
@@ -29,16 +36,21 @@ async function resolveViewsDir(root: string): Promise<string | undefined> {
     }
   };
   walk(loaded?.config.plugins ?? []);
-  return plugins.find((p) => p.name === "skybridge")?.api?.viewsDir;
+  const skybridgePlugin = plugins.find((p) => p.name === "skybridge");
+  return {
+    viewsDir: skybridgePlugin?.api?.viewsDir,
+    atomsDir: skybridgePlugin?.api?.atomsDir,
+  };
 }
 
 export const commandSteps: CommandStep[] = [
   {
-    label: "Scanning views",
+    label: "Scanning views and atoms",
     run: async () => {
       const root = process.cwd();
-      const viewsDir = await resolveViewsDir(root);
+      const { viewsDir, atomsDir } = await resolveSkybridgeDirs(root);
       scanAndWriteViewsDts(root, viewsDir);
+      scanAndWriteAtomsDts(root, atomsDir);
     },
   },
   {

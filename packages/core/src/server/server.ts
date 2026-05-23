@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import type {
@@ -32,6 +32,8 @@ import express, {
   type Express,
   type RequestHandler,
 } from "express";
+import ts from "typescript";
+import { z } from "zod";
 import { createApp } from "./express.js";
 import { createMiddlewareEntry } from "./metric.js";
 import type {
@@ -76,6 +78,14 @@ export type ToolDef<
   responseMetadata: TResponseMetadata;
 };
 
+/**
+ * Type marker for a registered atom — carries the props shape so renderers and
+ * atom components can infer prop contracts from `typeof server`.
+ */
+export type AtomDef<TProps = unknown> = {
+  props: TProps;
+};
+
 /** Which host runtime a view targets — `"apps-sdk"` (ChatGPT) or `"mcp-app"` (MCP Apps spec). */
 export type ViewHostType = "apps-sdk" | "mcp-app";
 
@@ -112,6 +122,16 @@ export interface ViewNameRegistry {}
 export type ViewName = keyof ViewNameRegistry & string;
 
 /**
+ * Registry of atom component names. The Skybridge Vite plugin augments this
+ * interface in `.skybridge/atoms.d.ts` with one key per atom file.
+ */
+// biome-ignore lint/suspicious/noEmptyInterface: register pattern — augmented by `.skybridge/atoms.d.ts` to narrow AtomName
+export interface AtomNameRegistry {}
+
+/** Union of valid atom component names. Narrowed by {@link AtomNameRegistry}. */
+export type AtomName = keyof AtomNameRegistry & string;
+
+/**
  * Pass under `view` in a tool's `registerTool` config to render the tool's
  * result through a Skybridge view instead of a plain text response.
  */
@@ -129,6 +149,24 @@ export interface ViewConfig {
   /** Per-view CSP overrides — see {@link ViewCsp}. */
   csp?: ViewCsp;
   /** Free-form metadata forwarded on the view resource's `_meta`. */
+  _meta?: Record<string, unknown>;
+}
+
+/**
+ * Registers a React component from the configured atoms directory as a named
+ * atom. Atoms are component primitives for later composition; registering one
+ * does not expose an MCP tool or view by itself.
+ */
+export interface AtomConfig<TProps extends ZodRawShapeCompat> {
+  /** Filename of the atom module (without extension) — matches a file in your `atomsDir`. */
+  component: AtomName;
+  /** Optional public name. Defaults to `component`. */
+  name?: string;
+  /** Zod-compatible schema describing the props this atom accepts. */
+  propsSchema: TProps;
+  /** Human-readable description of what the atom renders. */
+  description?: string;
+  /** Free-form metadata for future renderers or host integrations. */
   _meta?: Record<string, unknown>;
 }
 
@@ -178,6 +216,9 @@ type ViteManifestEntry = {
   imports?: string[];
   dynamicImports?: string[];
 };
+
+const RENDER_ATOMS_TOOL_NAME = "__skybridge_render_from_atoms";
+const RENDER_ATOMS_VIEW_NAME = "__skybridge_render_atoms";
 
 type OpenaiToolMeta = {
   "openai/outputTemplate": string;
@@ -263,8 +304,12 @@ type ViewResourceConfig<T extends ResourceMeta = ResourceMeta> = {
  *
  * Inspired by tRPC's `_def` pattern and Hono's type markers.
  */
-export interface McpServerTypes<TTools extends Record<string, ToolDef>> {
+export interface McpServerTypes<
+  TTools extends Record<string, ToolDef>,
+  TAtoms extends Record<string, AtomDef>,
+> {
   readonly tools: TTools;
+  readonly atoms: TAtoms;
 }
 
 type Simplify<T> = { [K in keyof T]: T[K] };
@@ -293,6 +338,7 @@ type ExtractMeta<T> = [Extract<T, { _meta: unknown }>] extends [never]
 
 type AddTool<
   TTools,
+  TAtoms extends Record<string, AtomDef>,
   TName extends string,
   TInput extends ZodRawShapeCompat,
   TOutput,
@@ -300,6 +346,19 @@ type AddTool<
 > = McpServer<
   TTools & {
     [K in TName]: ToolDef<ShapeOutput<TInput>, TOutput, TResponseMetadata>;
+  },
+  TAtoms
+>;
+
+type AddAtom<
+  TTools extends Record<string, ToolDef>,
+  TAtoms,
+  TName extends string,
+  TProps extends ZodRawShapeCompat,
+> = McpServer<
+  TTools,
+  TAtoms & {
+    [K in TName]: AtomDef<ShapeOutput<TProps>>;
   }
 >;
 
@@ -433,8 +492,9 @@ const McpServerBaseOmitted = McpServerBase as unknown as new (
  */
 export class McpServer<
   TTools extends Record<string, ToolDef> = Record<never, ToolDef>,
+  TAtoms extends Record<string, AtomDef> = Record<never, AtomDef>,
 > extends McpServerBaseOmitted {
-  declare readonly $types: McpServerTypes<TTools>;
+  declare readonly $types: McpServerTypes<TTools, TAtoms>;
   /**
    * The underlying Express app. Use this to extend the HTTP server with
    * custom routes, middleware, or settings — e.g.
@@ -451,7 +511,9 @@ export class McpServer<
   private customErrorMiddleware: ErrorMiddlewareConfig[] = [];
   private mcpMiddlewareEntries: McpMiddlewareEntry[] = [];
   private mcpMiddlewareApplied = false;
+  private renderAtomsToolRegistered = false;
   private claimedViews = new Map<string, string>();
+  private atoms = new Map<string, AtomConfig<ZodRawShapeCompat>>();
   private viewMetaBuilders = new Map<
     string,
     (extra: McpExtra | undefined) => ResourceMeta
@@ -669,6 +731,277 @@ export class McpServer<
   }
 
   /**
+   * Register a React component from `atomsDir` as an atom. The component name is
+   * generated by the Skybridge Vite plugin from files in `src/atoms` by default.
+   */
+  registerAtom<TName extends string, Props extends ZodRawShapeCompat>(
+    config: AtomConfig<Props> & { name: TName },
+  ): AddAtom<TTools, TAtoms, TName, Props>;
+  registerAtom<TComponent extends AtomName, Props extends ZodRawShapeCompat>(
+    config: AtomConfig<Props> & { component: TComponent; name?: undefined },
+  ): AddAtom<TTools, TAtoms, TComponent, Props>;
+  registerAtom(config: AtomConfig<ZodRawShapeCompat>): unknown {
+    const name = config.name ?? config.component;
+    this.assertValidAtomJsxName(name);
+    if (this.atoms.has(name)) {
+      throw new Error(`skybridge: atom "${name}" is already registered.`);
+    }
+    this.atoms.set(name, config);
+    return this;
+  }
+
+  private assertValidAtomJsxName(name: string): void {
+    if (/^[A-Z][A-Za-z0-9_$]*$/.test(name)) {
+      return;
+    }
+
+    throw new Error(
+      `skybridge: atom name "${name}" cannot be used as a JSX component. Use a PascalCase atom name, e.g. registerAtom({ name: "ProductCard", component: "${name}", propsSchema: ... }).`,
+    );
+  }
+
+  private ensureRenderAtomsToolRegistered(): void {
+    if (this.renderAtomsToolRegistered || this.atoms.size === 0) {
+      return;
+    }
+
+    this.renderAtomsToolRegistered = true;
+    this.registerTool(
+      {
+        name: RENDER_ATOMS_TOOL_NAME,
+        description: this.buildRenderAtomsToolDescription(),
+        inputSchema: {
+          jsx: z.string(),
+          props: z.record(z.string(), z.unknown()).optional(),
+        },
+        view: {
+          component: RENDER_ATOMS_VIEW_NAME as ViewName,
+          description: "Renders JSX composed from registered atoms.",
+        },
+      },
+      async ({ jsx, props }) => {
+        const atomList = [...this.atoms.entries()].map(([name, atom]) => ({
+          name,
+          component: atom.component,
+          filePath: this.resolveAtomFile(atom.component),
+        }));
+        const check = this.checkAtomJsx({
+          jsx,
+          props: props ?? {},
+          atoms: atomList,
+        });
+
+        if (!check.ok) {
+          return {
+            content: check.errors.join("\n"),
+            isError: true,
+            structuredContent: {
+              jsx,
+              props: props ?? {},
+              errors: check.errors,
+            },
+          };
+        }
+
+        return {
+          content: "Rendered JSX from registered atoms.",
+          structuredContent: {
+            jsx,
+            props: props ?? {},
+          },
+        };
+      },
+    );
+  }
+
+  private resolveAtomFile(component: string): string {
+    const atomsDir = path.join(process.cwd(), "src", "atoms");
+    const candidates = [
+      path.join(atomsDir, `${component}.tsx`),
+      path.join(atomsDir, `${component}.jsx`),
+      path.join(atomsDir, component, "index.tsx"),
+      path.join(atomsDir, component, "index.jsx"),
+    ];
+    const found = candidates.find((candidate) => existsSync(candidate));
+    if (!found) {
+      throw new Error(
+        `skybridge: atom component "${component}" was registered but no matching file was found in src/atoms.`,
+      );
+    }
+    return found;
+  }
+
+  private checkAtomJsx({
+    jsx,
+    props,
+    atoms,
+  }: {
+    jsx: string;
+    props: Record<string, unknown>;
+    atoms: Array<{ name: string; filePath: string }>;
+  }): { ok: true } | { ok: false; errors: string[] } {
+    const fileName = path.join(process.cwd(), ".skybridge", "render-atoms.tsx");
+    const atomImports = atoms
+      .map((atom, index) => {
+        return `import Atom${index} from ${JSON.stringify(atom.filePath)};`;
+      })
+      .join("\n");
+    const atomAliases = atoms
+      .map((atom, index) => {
+        return `const ${atom.name} = Atom${index};`;
+      })
+      .join("\n");
+    const source = [
+      'import * as React from "react";',
+      atomImports,
+      atomAliases,
+      this.buildAtomTypesSnippet(),
+      "const __skybridgeAtomTypes = null as unknown as RegisteredAtoms;",
+      "void __skybridgeAtomTypes;",
+      `const props = ${JSON.stringify(props)} as const;`,
+      `const __skybridgeNode = <>${jsx}</>;`,
+      "void __skybridgeNode;",
+    ].join("\n");
+
+    const compilerOptions: ts.CompilerOptions = {
+      ...this.readAppCompilerOptions(),
+      allowJs: true,
+      checkJs: true,
+      jsx: ts.JsxEmit.React,
+      jsxFactory: "React.createElement",
+      jsxFragmentFactory: "React.Fragment",
+      module: ts.ModuleKind.ESNext,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+      noEmit: true,
+      strict: true,
+      target: ts.ScriptTarget.ES2022,
+    };
+    const host = ts.createCompilerHost(compilerOptions, true);
+    const originalGetSourceFile = host.getSourceFile.bind(host);
+    host.getSourceFile = (
+      requestedFileName,
+      languageVersionOrOptions,
+      onError,
+      shouldCreateNewSourceFile,
+    ) => {
+      if (path.resolve(requestedFileName) === path.resolve(fileName)) {
+        return ts.createSourceFile(
+          fileName,
+          source,
+          ts.ScriptTarget.Latest,
+          true,
+          ts.ScriptKind.TSX,
+        );
+      }
+      return originalGetSourceFile(
+        requestedFileName,
+        languageVersionOrOptions,
+        onError,
+        shouldCreateNewSourceFile,
+      );
+    };
+
+    const program = ts.createProgram([fileName], compilerOptions, host);
+    const diagnostics = ts.getPreEmitDiagnostics(program);
+    if (diagnostics.length === 0) {
+      return { ok: true };
+    }
+
+    return {
+      ok: false,
+      errors: diagnostics.map((diagnostic) =>
+        ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"),
+      ),
+    };
+  }
+
+  private readAppCompilerOptions(): ts.CompilerOptions {
+    const configPath = ts.findConfigFile(process.cwd(), ts.sys.fileExists);
+    if (!configPath) {
+      return {};
+    }
+
+    const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
+    if (configFile.error) {
+      return {};
+    }
+
+    const parsed = ts.parseJsonConfigFileContent(
+      configFile.config,
+      ts.sys,
+      path.dirname(configPath),
+    );
+    return parsed.options;
+  }
+
+  private buildRenderAtomsToolDescription(): string {
+    return [
+      "Render a JSX snippet using only the atoms registered by this Skybridge app.",
+      "The JSX is TypeScript-checked against the registered atom components before rendering.",
+      "Use the `props` object for dynamic values that should be referenced from JSX expressions.",
+      "",
+      "Registered atom prop contract:",
+      "```ts",
+      this.buildAtomTypesSnippet(),
+      "```",
+    ].join("\n");
+  }
+
+  private buildAtomTypesSnippet(): string {
+    const entries = [...this.atoms.entries()]
+      .map(([name, atom]) => {
+        return `  ${JSON.stringify(name)}: ${this.propsSchemaToTypeLiteral(atom.propsSchema)};`;
+      })
+      .join("\n");
+
+    return ["type RegisteredAtoms = {", entries, "};"].join("\n");
+  }
+
+  private propsSchemaToTypeLiteral(shape: ZodRawShapeCompat): string {
+    const entries = Object.entries(shape).map(([name, schema]) => {
+      const optional = this.isOptionalSchema(schema);
+      return `  ${JSON.stringify(name)}${optional ? "?" : ""}: ${this.schemaToType(schema)};`;
+    });
+
+    return ["{", entries.join("\n"), "}"].join("\n");
+  }
+
+  private isOptionalSchema(schema: unknown): boolean {
+    return schema instanceof z.ZodOptional;
+  }
+
+  private schemaToType(schema: unknown): string {
+    if (schema instanceof z.ZodString) {
+      return "string";
+    }
+    if (schema instanceof z.ZodNumber) {
+      return "number";
+    }
+    if (schema instanceof z.ZodBoolean) {
+      return "boolean";
+    }
+    if (schema instanceof z.ZodNull) {
+      return "null";
+    }
+    if (schema instanceof z.ZodUndefined) {
+      return "undefined";
+    }
+    if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable) {
+      const inner = (schema as { unwrap: () => unknown }).unwrap();
+      return `${this.schemaToType(inner)}${schema instanceof z.ZodNullable ? " | null" : ""}`;
+    }
+    if (schema instanceof z.ZodArray) {
+      const element = (schema as { element: unknown }).element;
+      return `${this.schemaToType(element)}[]`;
+    }
+    if (schema instanceof z.ZodObject) {
+      const objectShape = (schema as { shape: ZodRawShapeCompat }).shape;
+      return this.propsSchemaToTypeLiteral(objectShape);
+    }
+    return "unknown";
+  }
+
+  /**
    * Connect to an MCP transport (override of the SDK's `connect`). Use this
    * when you're embedding Skybridge in a host that already manages its own
    * transport (e.g. stdio for desktop apps); for HTTP, prefer {@link McpServer.run}
@@ -679,6 +1012,7 @@ export class McpServer<
   async connect(
     transport: Parameters<typeof McpServerBase.prototype.connect>[0],
   ): Promise<void> {
+    this.ensureRenderAtomsToolRegistered();
     this.applyMcpMiddleware();
     return McpServerBase.prototype.connect.call(this, transport);
   }
@@ -696,6 +1030,7 @@ export class McpServer<
   async connectStatelessTransport(
     transport: Parameters<typeof McpServerBase.prototype.connect>[0],
   ): Promise<void> {
+    this.ensureRenderAtomsToolRegistered();
     this.applyMcpMiddleware();
 
     const { requestHandlers, notificationHandlers } = getHandlerMaps(
@@ -723,6 +1058,7 @@ export class McpServer<
    * Node, returns `undefined` once listening.
    */
   async run(): Promise<{ fetch: (...args: unknown[]) => unknown } | undefined> {
+    this.ensureRenderAtomsToolRegistered();
     this.applyMcpMiddleware();
     const httpServer = http.createServer();
 
@@ -1148,6 +1484,7 @@ export class McpServer<
     cb: ToolHandler<InputArgs, TReturn>,
   ): AddTool<
     TTools,
+    TAtoms,
     TName,
     InputArgs,
     ExtractStructuredContent<TReturn>,
