@@ -5,7 +5,11 @@ import { skybridge } from "skybridge/vite";
 import { defineConfig, type PluginOption } from "vite";
 
 export default defineConfig({
-  plugins: [skybridge() as PluginOption, react(), tailwindcss()],
+  plugins: [
+    skybridge({ fractalsDir: "src/fractals" }) as PluginOption,
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

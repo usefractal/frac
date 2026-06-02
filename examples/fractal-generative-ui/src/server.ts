@@ -4,13 +4,13 @@ import { z } from "zod";
 
 const server = new McpServer(
   {
-    name: "atoms-generative-ui",
+    name: "fractal-generative-ui",
     version: "0.0.1",
   },
-  { capabilities: {} },
+  { capabilities: {}, fractalsDir: "src/fractals" },
 )
   .mcpMiddleware(intentMiddleware())
-  .registerAtom({
+  .registerFractal({
     name: "HeroPanel",
     component: "HeroPanel",
     description:
@@ -22,7 +22,7 @@ const server = new McpServer(
       tone: z.enum(["blue", "green", "amber"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "MetricCard",
     component: "MetricCard",
     description: "A compact KPI card with a label, value, and optional change.",
@@ -33,7 +33,7 @@ const server = new McpServer(
       intent: z.enum(["neutral", "positive", "negative"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "ActionRow",
     component: "ActionRow",
     description: "A horizontal row of suggested next actions.",
@@ -42,7 +42,7 @@ const server = new McpServer(
       secondary: z.string().optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Stack",
     component: "Stack",
     description: "A vertical layout container with configurable spacing.",
@@ -50,7 +50,7 @@ const server = new McpServer(
       gap: z.enum(["sm", "md", "lg"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Grid",
     component: "Grid",
     description: "A responsive grid layout container for cards and panels.",
@@ -59,7 +59,7 @@ const server = new McpServer(
       gap: z.enum(["sm", "md", "lg"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "SectionTitle",
     component: "SectionTitle",
     description: "A section heading with optional supporting text.",
@@ -68,7 +68,7 @@ const server = new McpServer(
       subtitle: z.string().optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Badge",
     component: "Badge",
     description: "A small label for status, priority, or category.",
@@ -77,7 +77,7 @@ const server = new McpServer(
       tone: z.enum(["slate", "blue", "green", "amber", "red"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "InsightList",
     component: "InsightList",
     description: "A concise list of insights or observations.",
@@ -86,7 +86,7 @@ const server = new McpServer(
       items: z.array(z.string()),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "ProgressBar",
     component: "ProgressBar",
     description: "A labeled progress bar for percentages and completion.",
@@ -97,7 +97,7 @@ const server = new McpServer(
       tone: z.enum(["blue", "green", "amber", "red"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Callout",
     component: "Callout",
     description: "A highlighted note, risk, recommendation, or warning.",
@@ -107,7 +107,7 @@ const server = new McpServer(
       tone: z.enum(["info", "success", "warning", "danger"]).optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "DataTable",
     component: "DataTable",
     description: "A compact table for structured rows and columns.",
@@ -117,7 +117,7 @@ const server = new McpServer(
       caption: z.string().optional(),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "KeyValueList",
     component: "KeyValueList",
     description: "A list of labeled facts, attributes, or settings.",
@@ -131,7 +131,7 @@ const server = new McpServer(
       ),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Timeline",
     component: "Timeline",
     description: "A vertical sequence of dated or ordered events.",
@@ -146,7 +146,7 @@ const server = new McpServer(
       ),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "Checklist",
     component: "Checklist",
     description: "A list of tasks with completed and pending states.",
@@ -160,7 +160,7 @@ const server = new McpServer(
       ),
     },
   })
-  .registerAtom({
+  .registerFractal({
     name: "StatComparison",
     component: "StatComparison",
     description: "A before-and-after stat comparison with a delta.",

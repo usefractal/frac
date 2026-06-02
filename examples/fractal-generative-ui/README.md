@@ -1,7 +1,7 @@
-# Atoms Generative UI Example
+# Fractal Generative UI Example
 
-An example Skybridge app that registers React components as atoms. Skybridge
-generates the internal render-from-atoms tool and framework-owned render view.
+An example Fractal app built on Skybridge. It registers React components as
+composable Fractals, then uses the Skybridge runtime to render generated UI.
 
 ## Local Development
 
@@ -10,8 +10,7 @@ pnpm install
 pnpm dev
 ```
 
-Try calling `__skybridge_render_from_atoms` with JSX that uses the registered
-atoms:
+Try calling `show_dashboards` with JSX that uses the registered Fractals:
 
 ```json
 {

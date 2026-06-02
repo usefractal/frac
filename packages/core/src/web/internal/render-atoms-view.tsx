@@ -26,13 +26,13 @@ class RenderAtomsErrorBoundary extends Component<
   RenderAtomsErrorBoundaryProps,
   RenderAtomsErrorBoundaryState
 > {
-  state: RenderAtomsErrorBoundaryState = { error: null };
+  override state: RenderAtomsErrorBoundaryState = { error: null };
 
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
 
-  render() {
+  override render() {
     if (this.state.error) {
       return createElement(
         "pre",
@@ -80,8 +80,9 @@ export function RenderAtomsView({ atomRegistry }: RenderAtomsViewProps) {
       allowUnknownElements: true,
       bindings: { props },
       components: atomRegistry,
-      jsx: `<div className="skybridge-atoms-root">${jsx}</div>`,
+      jsx: `<div className="fractal-composable-root">${jsx}</div>`,
       renderInWrapper: false,
+      renderUnrecognized: () => null,
       showWarnings: true,
     }),
   );

@@ -79,8 +79,8 @@ export type ToolDef<
 };
 
 /**
- * Type marker for a registered atom — carries the props shape so renderers and
- * atom components can infer prop contracts from `typeof server`.
+ * Type marker for a registered Fractal — carries the props shape so renderers and
+ * Fractal components can infer prop contracts from `typeof server`.
  */
 export type AtomDef<TProps = unknown> = {
   props: TProps;
@@ -122,13 +122,13 @@ export interface ViewNameRegistry {}
 export type ViewName = keyof ViewNameRegistry & string;
 
 /**
- * Registry of atom component names. The Skybridge Vite plugin augments this
- * interface in `.skybridge/atoms.d.ts` with one key per atom file.
+ * Registry of Fractal component names. The Skybridge Vite plugin augments this
+ * interface in `.skybridge/atoms.d.ts` with one key per Fractal file.
  */
 // biome-ignore lint/suspicious/noEmptyInterface: register pattern — augmented by `.skybridge/atoms.d.ts` to narrow AtomName
 export interface AtomNameRegistry {}
 
-/** Union of valid atom component names. Narrowed by {@link AtomNameRegistry}. */
+/** Union of valid Fractal component names. Narrowed by {@link AtomNameRegistry}. */
 export type AtomName = keyof AtomNameRegistry & string;
 
 /**
@@ -153,18 +153,21 @@ export interface ViewConfig {
 }
 
 /**
- * Registers a React component from the configured atoms directory as a named
- * atom. Atoms are component primitives for later composition; registering one
+ * Registers a React component from the configured Fractals directory as a named
+ * Fractal. Fractals are component primitives for later composition; registering one
  * does not expose an MCP tool or view by itself.
  */
-export interface AtomConfig<TProps extends ZodRawShapeCompat> {
-  /** Filename of the atom module (without extension) — matches a file in your `atomsDir`. */
-  component: AtomName;
+export interface AtomConfig<
+  TProps extends ZodRawShapeCompat,
+  TComponent extends string = AtomName,
+> {
+  /** Filename of the Fractal module (without extension) — matches a file in your `atomsDir`. */
+  component: TComponent;
   /** Optional public name. Defaults to `component`. */
   name?: string;
-  /** Zod-compatible schema describing the props this atom accepts. */
+  /** Zod-compatible schema describing the props this Fractal accepts. */
   propsSchema: TProps;
-  /** Human-readable description of what the atom renders. */
+  /** Human-readable description of what the Fractal renders. */
   description?: string;
   /** Free-form metadata for future renderers or host integrations. */
   _meta?: Record<string, unknown>;
@@ -217,7 +220,7 @@ type ViteManifestEntry = {
   dynamicImports?: string[];
 };
 
-const RENDER_ATOMS_TOOL_NAME = "__skybridge_render_from_atoms";
+const DEFAULT_RENDER_ATOMS_TOOL_NAME = "show_dashboards";
 const RENDER_ATOMS_VIEW_NAME = "__skybridge_render_atoms";
 
 type OpenaiToolMeta = {
@@ -361,6 +364,55 @@ type AddAtom<
     [K in TName]: AtomDef<ShapeOutput<TProps>>;
   }
 >;
+
+type AtomRenderCorrection = {
+  field: string;
+  received: string;
+  corrected: string;
+};
+
+type AtomRenderValidationError = {
+  field?: string;
+  received?: string;
+  allowed?: string[];
+  suggested?: string;
+  message: string;
+};
+
+type AtomRenderCheckResult =
+  | {
+      ok: true;
+      jsx: string;
+      corrections: AtomRenderCorrection[];
+    }
+  | {
+      ok: false;
+      jsx: string;
+      errors: AtomRenderValidationError[];
+      corrections: AtomRenderCorrection[];
+    };
+
+const ATOM_VALUE_ALIASES: Record<string, string> = {
+  large: "lg",
+  medium: "md",
+  small: "sm",
+  success: "green",
+};
+
+export interface SkybridgeServerOptions extends ServerOptions {
+  /** Name for the generated Fractal render tool. Defaults to `show_dashboards`. */
+  fractalsRenderToolName?: string;
+  /** Additional instructions prepended to the generated Fractal render tool description. */
+  fractalsRenderToolDescription?: string;
+  /** Directory containing Fractal component files. Defaults to `src/fractals` when present, otherwise `src/atoms`. */
+  fractalsDir?: string;
+  /** @deprecated Use `fractalsRenderToolName`. */
+  atomsRenderToolName?: string;
+  /** @deprecated Use `fractalsRenderToolDescription`. */
+  atomsRenderToolDescription?: string;
+  /** @deprecated Use `fractalsDir`. */
+  atomsDir?: string;
+}
 
 interface ToolConfig<TInput extends ZodRawShapeCompat | AnySchema> {
   name: string;
@@ -513,19 +565,26 @@ export class McpServer<
   private mcpMiddlewareApplied = false;
   private renderAtomsToolRegistered = false;
   private claimedViews = new Map<string, string>();
-  private atoms = new Map<string, AtomConfig<ZodRawShapeCompat>>();
+  private atoms = new Map<string, AtomConfig<ZodRawShapeCompat, string>>();
   private viewMetaBuilders = new Map<
     string,
     (extra: McpExtra | undefined) => ResourceMeta
   >();
   private viteManifest: Record<string, ViteManifestEntry> | null = null;
   private readonly serverInfo: Implementation;
-  private readonly serverOptions?: ServerOptions;
+  private readonly serverOptions?: SkybridgeServerOptions;
+  private readonly atomsRenderToolName: string;
+  private readonly fractalComponentDirs: string[];
 
-  constructor(serverInfo: Implementation, options?: ServerOptions) {
+  constructor(serverInfo: Implementation, options?: SkybridgeServerOptions) {
     super(serverInfo, options);
     this.serverInfo = serverInfo;
     this.serverOptions = options;
+    this.atomsRenderToolName =
+      options?.fractalsRenderToolName ??
+      options?.atomsRenderToolName ??
+      DEFAULT_RENDER_ATOMS_TOOL_NAME;
+    this.fractalComponentDirs = this.resolveFractalComponentDirs(options);
     this.express = express();
     this.express.use(express.json());
   }
@@ -731,20 +790,42 @@ export class McpServer<
   }
 
   /**
-   * Register a React component from `atomsDir` as an atom. The component name is
-   * generated by the Skybridge Vite plugin from files in `src/atoms` by default.
+   * Register a React component from `fractalsDir` as a Fractal. The component name is
+   * generated by the Skybridge Vite plugin from files in `src/fractals` by default.
    */
+  registerFractal<TName extends string, Props extends ZodRawShapeCompat>(
+    config: AtomConfig<Props, string> & { name: TName },
+  ): AddAtom<TTools, TAtoms, TName, Props>;
+  registerFractal<TComponent extends AtomName, Props extends ZodRawShapeCompat>(
+    config: AtomConfig<Props, TComponent> & {
+      component: TComponent;
+      name?: undefined;
+    },
+  ): AddAtom<TTools, TAtoms, TComponent, Props>;
+  registerFractal(config: AtomConfig<ZodRawShapeCompat, string>): unknown {
+    return this.registerFractalConfig(config);
+  }
+
   registerAtom<TName extends string, Props extends ZodRawShapeCompat>(
-    config: AtomConfig<Props> & { name: TName },
+    config: AtomConfig<Props, string> & { name: TName },
   ): AddAtom<TTools, TAtoms, TName, Props>;
   registerAtom<TComponent extends AtomName, Props extends ZodRawShapeCompat>(
-    config: AtomConfig<Props> & { component: TComponent; name?: undefined },
+    config: AtomConfig<Props, TComponent> & {
+      component: TComponent;
+      name?: undefined;
+    },
   ): AddAtom<TTools, TAtoms, TComponent, Props>;
-  registerAtom(config: AtomConfig<ZodRawShapeCompat>): unknown {
+  registerAtom(config: AtomConfig<ZodRawShapeCompat, string>): unknown {
+    return this.registerFractalConfig(config);
+  }
+
+  private registerFractalConfig(
+    config: AtomConfig<ZodRawShapeCompat, string>,
+  ): unknown {
     const name = config.name ?? config.component;
     this.assertValidAtomJsxName(name);
     if (this.atoms.has(name)) {
-      throw new Error(`skybridge: atom "${name}" is already registered.`);
+      throw new Error(`skybridge: Fractal "${name}" is already registered.`);
     }
     this.atoms.set(name, config);
     return this;
@@ -756,7 +837,7 @@ export class McpServer<
     }
 
     throw new Error(
-      `skybridge: atom name "${name}" cannot be used as a JSX component. Use a PascalCase atom name, e.g. registerAtom({ name: "ProductCard", component: "${name}", propsSchema: ... }).`,
+      `skybridge: Fractal name "${name}" cannot be used as a JSX component. Use a PascalCase Fractal name, e.g. registerFractal({ name: "ProductCard", component: "${name}", propsSchema: ... }).`,
     );
   }
 
@@ -768,15 +849,19 @@ export class McpServer<
     this.renderAtomsToolRegistered = true;
     this.registerTool(
       {
-        name: RENDER_ATOMS_TOOL_NAME,
+        name: this.atomsRenderToolName,
         description: this.buildRenderAtomsToolDescription(),
         inputSchema: {
-          jsx: z.string(),
+          jsx: z
+            .string()
+            .describe(
+              "A single valid JSX tree using only registered Fractal component names and their documented props. Do not include imports, exports, function definitions, markdown, code fences, or comments. Use string props in quotes, number props in braces, and pass arrays or objects through the `props` object instead of inline literals.",
+            ),
           props: z.record(z.string(), z.unknown()).optional(),
         },
         view: {
           component: RENDER_ATOMS_VIEW_NAME as ViewName,
-          description: "Renders JSX composed from registered atoms.",
+          description: "Renders JSX composed from registered Fractals.",
         },
       },
       async ({ jsx, props }) => {
@@ -784,6 +869,7 @@ export class McpServer<
           name,
           component: atom.component,
           filePath: this.resolveAtomFile(atom.component),
+          propsSchema: atom.propsSchema,
         }));
         const check = this.checkAtomJsx({
           jsx,
@@ -793,21 +879,26 @@ export class McpServer<
 
         if (!check.ok) {
           return {
-            content: check.errors.join("\n"),
+            content: this.formatAtomRenderErrors(check.errors),
             isError: true,
             structuredContent: {
-              jsx,
+              jsx: check.jsx,
               props: props ?? {},
               errors: check.errors,
+              corrections: check.corrections,
             },
           };
         }
 
         return {
-          content: "Rendered JSX from registered atoms.",
+          content:
+            check.corrections.length > 0
+              ? `Rendered JSX from registered Fractals. Applied ${check.corrections.length} correction(s).`
+              : "Rendered JSX from registered Fractals.",
           structuredContent: {
-            jsx,
+            jsx: check.jsx,
             props: props ?? {},
+            corrections: check.corrections,
           },
         };
       },
@@ -815,20 +906,36 @@ export class McpServer<
   }
 
   private resolveAtomFile(component: string): string {
-    const atomsDir = path.join(process.cwd(), "src", "atoms");
-    const candidates = [
-      path.join(atomsDir, `${component}.tsx`),
-      path.join(atomsDir, `${component}.jsx`),
-      path.join(atomsDir, component, "index.tsx"),
-      path.join(atomsDir, component, "index.jsx"),
-    ];
+    const candidates = this.fractalComponentDirs.flatMap((dir) => {
+      const fractalsDir = path.isAbsolute(dir)
+        ? dir
+        : path.join(process.cwd(), dir);
+
+      return [
+        path.join(fractalsDir, `${component}.tsx`),
+        path.join(fractalsDir, `${component}.jsx`),
+        path.join(fractalsDir, component, "index.tsx"),
+        path.join(fractalsDir, component, "index.jsx"),
+      ];
+    });
     const found = candidates.find((candidate) => existsSync(candidate));
     if (!found) {
       throw new Error(
-        `skybridge: atom component "${component}" was registered but no matching file was found in src/atoms.`,
+        `skybridge: Fractal component "${component}" was registered but no matching file was found in ${this.fractalComponentDirs.join(" or ")}.`,
       );
     }
     return found;
+  }
+
+  private resolveFractalComponentDirs(
+    options?: SkybridgeServerOptions,
+  ): string[] {
+    const configuredDir = options?.fractalsDir ?? options?.atomsDir;
+    if (configuredDir) {
+      return [configuredDir];
+    }
+
+    return ["src/fractals", "src/atoms"];
   }
 
   private checkAtomJsx({
@@ -838,12 +945,26 @@ export class McpServer<
   }: {
     jsx: string;
     props: Record<string, unknown>;
-    atoms: Array<{ name: string; filePath: string }>;
-  }): { ok: true } | { ok: false; errors: string[] } {
+    atoms: Array<{
+      name: string;
+      filePath: string;
+      propsSchema: ZodRawShapeCompat;
+    }>;
+  }): AtomRenderCheckResult {
+    const normalized = this.normalizeAtomJsx({ jsx, atoms });
+    if (normalized.errors.length > 0) {
+      return {
+        ok: false,
+        jsx: normalized.jsx,
+        errors: normalized.errors,
+        corrections: normalized.corrections,
+      };
+    }
+
     const fileName = path.join(process.cwd(), ".skybridge", "render-atoms.tsx");
     const atomImports = atoms
       .map((atom, index) => {
-        return `import Atom${index} from ${JSON.stringify(atom.filePath)};`;
+        return `import Atom${index} from ${JSON.stringify(this.stripJsxExtension(atom.filePath))};`;
       })
       .join("\n");
     const atomAliases = atoms
@@ -859,22 +980,31 @@ export class McpServer<
       "const __skybridgeAtomTypes = null as unknown as RegisteredAtoms;",
       "void __skybridgeAtomTypes;",
       `const props = ${JSON.stringify(props)} as const;`,
-      `const __skybridgeNode = <>${jsx}</>;`,
+      `const __skybridgeNode = <>${normalized.jsx}</>;`,
       "void __skybridgeNode;",
     ].join("\n");
 
     const compilerOptions: ts.CompilerOptions = {
       ...this.readAppCompilerOptions(),
       allowJs: true,
+      allowImportingTsExtensions: true,
       checkJs: true,
-      jsx: ts.JsxEmit.React,
-      jsxFactory: "React.createElement",
-      jsxFragmentFactory: "React.Fragment",
+      composite: false,
+      declaration: false,
+      declarationMap: false,
+      incremental: false,
+      jsx: ts.JsxEmit.ReactJSX,
       module: ts.ModuleKind.ESNext,
       moduleResolution: ts.ModuleResolutionKind.Bundler,
       noEmit: true,
+      noUnusedLocals: false,
+      noUnusedParameters: false,
+      outDir: undefined,
+      rootDir: undefined,
+      sourceMap: false,
       strict: true,
       target: ts.ScriptTarget.ES2022,
+      tsBuildInfoFile: undefined,
     };
     const host = ts.createCompilerHost(compilerOptions, true);
     const originalGetSourceFile = host.getSourceFile.bind(host);
@@ -904,15 +1034,241 @@ export class McpServer<
     const program = ts.createProgram([fileName], compilerOptions, host);
     const diagnostics = ts.getPreEmitDiagnostics(program);
     if (diagnostics.length === 0) {
-      return { ok: true };
+      return {
+        ok: true,
+        jsx: normalized.jsx,
+        corrections: normalized.corrections,
+      };
     }
 
     return {
       ok: false,
-      errors: diagnostics.map((diagnostic) =>
-        ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"),
-      ),
+      jsx: normalized.jsx,
+      errors: diagnostics.map((diagnostic) => ({
+        message: ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"),
+      })),
+      corrections: normalized.corrections,
     };
+  }
+
+  private normalizeAtomJsx({
+    jsx,
+    atoms,
+  }: {
+    jsx: string;
+    atoms: Array<{
+      name: string;
+      propsSchema: ZodRawShapeCompat;
+    }>;
+  }): {
+    jsx: string;
+    corrections: AtomRenderCorrection[];
+    errors: AtomRenderValidationError[];
+  } {
+    const sourcePrefix = "<>";
+    const sourceFile = ts.createSourceFile(
+      "render-atoms-input.tsx",
+      `${sourcePrefix}${jsx}</>`,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TSX,
+    );
+    const atomSchemas = new Map(atoms.map((atom) => [atom.name, atom.propsSchema]));
+    const corrections: AtomRenderCorrection[] = [];
+    const errors: AtomRenderValidationError[] = [];
+    const replacements: Array<{ start: number; end: number; text: string }> = [];
+
+    const visit = (node: ts.Node) => {
+      if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+        const tagName = node.tagName.getText(sourceFile);
+        const propsSchema = atomSchemas.get(tagName);
+        if (propsSchema) {
+          for (const property of node.attributes.properties) {
+            if (!ts.isJsxAttribute(property)) {
+              continue;
+            }
+            const propName = property.name.getText(sourceFile);
+            const allowed = this.getEnumValues(propsSchema[propName]);
+            if (!allowed) {
+              continue;
+            }
+
+            const value = this.readJsxAttributeValue(property.initializer, sourceFile);
+            if (!value) {
+              continue;
+            }
+
+            const field = `${tagName}.${propName}`;
+            if (allowed.includes(value.value)) {
+              if (value.needsStringLiteral) {
+                replacements.push({
+                  start: value.start - sourcePrefix.length,
+                  end: value.end - sourcePrefix.length,
+                  text: JSON.stringify(value.value),
+                });
+                corrections.push({
+                  field,
+                  received: `{${value.value}}`,
+                  corrected: value.value,
+                });
+              }
+              continue;
+            }
+
+            const suggested = this.suggestAtomPropValue(value.value, allowed);
+            if (suggested) {
+              replacements.push({
+                start: value.start - sourcePrefix.length,
+                end: value.end - sourcePrefix.length,
+                text: JSON.stringify(suggested),
+              });
+              corrections.push({
+                field,
+                received: value.value,
+                corrected: suggested,
+              });
+              continue;
+            }
+
+            errors.push({
+              field,
+              received: value.value,
+              allowed,
+              message: `${field} received ${JSON.stringify(value.value)}, but allowed values are ${allowed.map((item) => JSON.stringify(item)).join(", ")}.`,
+            });
+          }
+        }
+      }
+
+      ts.forEachChild(node, visit);
+    };
+
+    visit(sourceFile);
+
+    let normalized = jsx;
+    for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+      normalized =
+        normalized.slice(0, replacement.start) +
+        replacement.text +
+        normalized.slice(replacement.end);
+    }
+
+    return { jsx: normalized, corrections, errors };
+  }
+
+  private readJsxAttributeValue(
+    initializer: ts.JsxAttribute["initializer"],
+    sourceFile: ts.SourceFile,
+  ):
+    | { value: string; start: number; end: number; needsStringLiteral?: boolean }
+    | undefined {
+    if (!initializer) {
+      return {
+        value: "true",
+        start: 0,
+        end: 0,
+      };
+    }
+
+    if (ts.isStringLiteral(initializer)) {
+      return {
+        value: initializer.text,
+        start: initializer.getStart(sourceFile),
+        end: initializer.getEnd(),
+      };
+    }
+
+    if (!ts.isJsxExpression(initializer) || !initializer.expression) {
+      return undefined;
+    }
+
+    const expression = initializer.expression;
+    if (ts.isNumericLiteral(expression)) {
+      return {
+        value: expression.text,
+        start: initializer.getStart(sourceFile),
+        end: initializer.getEnd(),
+        needsStringLiteral: true,
+      };
+    }
+
+    if (ts.isStringLiteral(expression)) {
+      return {
+        value: expression.text,
+        start: initializer.getStart(sourceFile),
+        end: initializer.getEnd(),
+      };
+    }
+
+    if (expression.kind === ts.SyntaxKind.TrueKeyword) {
+      return {
+        value: "true",
+        start: initializer.getStart(sourceFile),
+        end: initializer.getEnd(),
+      };
+    }
+
+    if (expression.kind === ts.SyntaxKind.FalseKeyword) {
+      return {
+        value: "false",
+        start: initializer.getStart(sourceFile),
+        end: initializer.getEnd(),
+      };
+    }
+
+    return undefined;
+  }
+
+  private suggestAtomPropValue(
+    received: string,
+    allowed: string[],
+  ): string | undefined {
+    if (allowed.includes(received)) {
+      return received;
+    }
+
+    const alias = ATOM_VALUE_ALIASES[received];
+    if (alias && allowed.includes(alias)) {
+      return alias;
+    }
+
+    return undefined;
+  }
+
+  private getEnumValues(schema: unknown): string[] | undefined {
+    if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable) {
+      return this.getEnumValues((schema as { unwrap: () => unknown }).unwrap());
+    }
+
+    if (schema instanceof z.ZodEnum) {
+      return schema.options.filter((option): option is string => {
+        return typeof option === "string";
+      });
+    }
+
+    return undefined;
+  }
+
+  private formatAtomRenderErrors(errors: AtomRenderValidationError[]): string {
+    return errors
+      .map((error) => {
+        if (!error.field) {
+          return error.message;
+        }
+
+        const details = [
+          error.message,
+          error.allowed ? `Allowed: ${error.allowed.join(", ")}` : undefined,
+          error.suggested ? `Suggested: ${error.suggested}` : undefined,
+        ].filter(Boolean);
+
+        return details.join("\n");
+      })
+      .join("\n\n");
+  }
+
+  private stripJsxExtension(filePath: string): string {
+    return filePath.replace(/\.[cm]?[jt]sx$/, "");
   }
 
   private readAppCompilerOptions(): ts.CompilerOptions {
@@ -935,16 +1291,68 @@ export class McpServer<
   }
 
   private buildRenderAtomsToolDescription(): string {
-    return [
-      "Render a JSX snippet using only the atoms registered by this Skybridge app.",
-      "The JSX is TypeScript-checked against the registered atom components before rendering.",
-      "Use the `props` object for dynamic values that should be referenced from JSX expressions.",
+    const customDescription =
+      this.serverOptions?.fractalsRenderToolDescription ??
+      this.serverOptions?.atomsRenderToolDescription;
+
+    const contractDescription = [
+      "Allowed prop values:",
+      this.buildAtomEnumValuesDescription(),
       "",
-      "Registered atom prop contract:",
+      "Registered Fractal prop contract:",
       "```ts",
       this.buildAtomTypesSnippet(),
       "```",
+    ];
+
+    if (customDescription) {
+      return [customDescription, "", ...contractDescription].join("\n");
+    }
+
+    return [
+      "Render a useful UI for natural user requests using this app's registered Fractals.",
+      "Use this tool when the user asks for a dashboard, report, KPI view, metrics panel, status update, weekly brief, summary, table, timeline, checklist, risk view, or visual layout.",
+      "The user does not need to ask for JSX or mention Fractals. If they say something like \"Give me a dashboard for Activation Rate, Support Tickets, Conversion Rate\", infer an appropriate layout and generate the JSX yourself.",
+      "Use only registered Fractals and their prop contracts. The JSX is TypeScript-checked before rendering.",
+      "Use the `props` object for dynamic arrays, objects, or larger data values that should be referenced from JSX expressions.",
+      "",
+      "Example natural requests this tool should handle:",
+      "- Give me a dashboard for Activation Rate, Support Tickets, Conversion Rate.",
+      "- Show launch health.",
+      "- Summarize these KPIs.",
+      "- Make a weekly business brief.",
+      "- Create a support status view.",
+      "",
+      "Layout recipes:",
+      "- 1-3 metrics: use `Stack`, a `HeroPanel`, and a `Grid` of `MetricCard` Fractals.",
+      "- Metrics plus risks or recommendations: add a `Callout`.",
+      "- Observations or takeaways: add an `InsightList`.",
+      "- Ordered events: use a `Timeline`.",
+      "- Tasks or next steps: use a `Checklist`.",
+      "- Facts, settings, or attributes: use a `KeyValueList`.",
+      "- Structured rows and columns: use a `DataTable`.",
+      "",
+      ...contractDescription,
     ].join("\n");
+  }
+
+  private buildAtomEnumValuesDescription(): string {
+    const entries = [...this.atoms.entries()].flatMap(([atomName, atom]) => {
+      return Object.entries(atom.propsSchema).flatMap(([propName, schema]) => {
+        const allowed = this.getEnumValues(schema);
+        if (!allowed || allowed.length === 0) {
+          return [];
+        }
+
+        return `- \`${atomName}.${propName}\`: ${allowed.map((value) => `\`${value}\``).join(", ")}`;
+      });
+    });
+
+    if (entries.length === 0) {
+      return "- No enum props are registered.";
+    }
+
+    return entries.join("\n");
   }
 
   private buildAtomTypesSnippet(): string {

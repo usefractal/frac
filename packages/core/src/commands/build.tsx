@@ -45,7 +45,7 @@ async function resolveSkybridgeDirs(root: string): Promise<{
 
 export const commandSteps: CommandStep[] = [
   {
-    label: "Scanning views and atoms",
+    label: "Scanning views and Fractals",
     run: async () => {
       const root = process.cwd();
       const { viewsDir, atomsDir } = await resolveSkybridgeDirs(root);

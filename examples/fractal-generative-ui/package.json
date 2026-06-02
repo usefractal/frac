@@ -1,8 +1,8 @@
 {
-  "name": "skybridge-atoms-generative-ui-example",
+  "name": "fractal-generative-ui-example",
   "version": "0.0.1",
   "private": true,
-  "description": "Generative UI with Skybridge atoms",
+  "description": "Generative UI with Fractal composable components on Skybridge",
   "type": "module",
   "scripts": {
     "dev": "skybridge dev",

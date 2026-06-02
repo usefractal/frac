@@ -1,4 +1,10 @@
-import { globSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  globSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, dirname, isAbsolute, join, parse, resolve } from "node:path";
 import { hasDefaultExport } from "./validate-view.js";
 
@@ -61,7 +67,7 @@ export function assertUniqueAtomNames(atoms: DiscoveredAtom[]): void {
   for (const [name, paths] of nameMap) {
     if (paths.length > 1) {
       throw new Error(
-        `skybridge: duplicate atom name "${name}" resolved from:\n  - ${paths.join("\n  - ")}\nRename one of the files to avoid the conflict.`,
+        `skybridge: duplicate Fractal name "${name}" resolved from:\n  - ${paths.join("\n  - ")}\nRename one of the files to avoid the conflict.`,
       );
     }
   }
@@ -110,7 +116,9 @@ export function scanAndWriteAtomsDts(
   root: string,
   atomsDir?: string,
 ): DiscoveredAtom[] {
-  const rawDir = atomsDir ?? "src/atoms";
+  const rawDir =
+    atomsDir ??
+    (existsSync(resolve(root, "src/fractals")) ? "src/fractals" : "src/atoms");
   const resolvedDir = isAbsolute(rawDir) ? rawDir : resolve(root, rawDir);
 
   const atoms = discoverAtomsSync(resolvedDir);

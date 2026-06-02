@@ -28,7 +28,9 @@ const RENDER_ATOMS_VIEW_NAME = "__skybridge_render_atoms";
 export interface SkybridgePluginOptions {
   /** Directory scanned for view modules. Defaults to `"src/views"`. */
   viewsDir?: string;
-  /** Directory scanned for atom components. Defaults to `"src/atoms"`. */
+  /** Directory scanned for Fractal components. Defaults to `"src/fractals"` when present, otherwise `"src/atoms"`. */
+  fractalsDir?: string;
+  /** @deprecated Use `fractalsDir`. */
   atomsDir?: string;
 }
 
@@ -99,6 +101,12 @@ function getViewEntryPattern(viewsDir: string): RegExp {
   );
 }
 
+function resolveDefaultFractalsDir(projectRoot: string): string {
+  return existsSync(resolve(projectRoot, "src/fractals"))
+    ? "src/fractals"
+    : "src/atoms";
+}
+
 /**
  * Vite plugin that wires a Skybridge project's view files into Vite.
  *
@@ -127,7 +135,7 @@ function getViewEntryPattern(viewsDir: string): RegExp {
  */
 export function skybridge(options?: SkybridgePluginOptions): Plugin {
   const rawViewsDir = options?.viewsDir ?? "src/views";
-  const rawAtomsDir = options?.atomsDir ?? "src/atoms";
+  const configuredFractalsDir = options?.fractalsDir ?? options?.atomsDir;
   let resolvedViewsDir: string;
   let resolvedAtomsDir: string;
   let projectRoot: string;
@@ -139,16 +147,18 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
     name: "skybridge",
     enforce: "pre",
     // Read by `skybridge build` to resolve viewsDir before `tsc -b` runs.
-    api: { viewsDir: rawViewsDir, atomsDir: rawAtomsDir },
+    api: { viewsDir: rawViewsDir, atomsDir: configuredFractalsDir },
 
     config(config) {
       projectRoot = config.root || process.cwd();
+      const rawFractalsDir =
+        configuredFractalsDir ?? resolveDefaultFractalsDir(projectRoot);
       resolvedViewsDir = isAbsolute(rawViewsDir)
         ? rawViewsDir
         : resolve(projectRoot, rawViewsDir);
-      resolvedAtomsDir = isAbsolute(rawAtomsDir)
-        ? rawAtomsDir
-        : resolve(projectRoot, rawAtomsDir);
+      resolvedAtomsDir = isAbsolute(rawFractalsDir)
+        ? rawFractalsDir
+        : resolve(projectRoot, rawFractalsDir);
       viewEntryPattern = getViewEntryPattern(resolvedViewsDir);
 
       const views = discoverViewsSync(resolvedViewsDir);
@@ -243,12 +253,14 @@ export function skybridge(options?: SkybridgePluginOptions): Plugin {
     configureServer(server: ViteDevServer) {
       if (!resolvedViewsDir) {
         const root = server.config.root || process.cwd();
+        const rawFractalsDir =
+          configuredFractalsDir ?? resolveDefaultFractalsDir(root);
         resolvedViewsDir = isAbsolute(rawViewsDir)
           ? rawViewsDir
           : resolve(root, rawViewsDir);
-        resolvedAtomsDir = isAbsolute(rawAtomsDir)
-          ? rawAtomsDir
-          : resolve(root, rawAtomsDir);
+        resolvedAtomsDir = isAbsolute(rawFractalsDir)
+          ? rawFractalsDir
+          : resolve(root, rawFractalsDir);
         projectRoot = root;
         viewEntryPattern = getViewEntryPattern(resolvedViewsDir);
       }
