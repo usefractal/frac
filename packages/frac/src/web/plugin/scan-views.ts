@@ -113,11 +113,12 @@ export function writeViewsDts(
 export function scanAndWriteViewsDts(
   projectRoot?: string,
   viewsDir?: string,
-): void {
+): DiscoveredView[] {
   const root = projectRoot ?? process.cwd();
   const rawDir = viewsDir ?? "src/views";
   const resolvedDir = isAbsolute(rawDir) ? rawDir : resolve(root, rawDir);
 
   const views = discoverViewsSync(resolvedDir);
   writeViewsDts(root, views);
+  return views;
 }

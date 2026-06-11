@@ -1,12 +1,15 @@
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { Command } from "@oclif/core";
 import { Box, render, Text } from "ink";
 import { useEffect } from "react";
 import { Header } from "../cli/header.js";
+import { runCommand } from "../cli/run-command.js";
 import { type CommandStep, useExecuteSteps } from "../cli/use-execute-steps.js";
 import { scanAndWriteAtomsDts } from "../web/plugin/scan-atoms.js";
 import { scanAndWriteViewsDts } from "../web/plugin/scan-views.js";
+
+let clientEntryCount = 0;
 
 async function resolveFractalDirs(root: string): Promise<{
   viewsDir?: string;
@@ -51,8 +54,9 @@ export const commandSteps: CommandStep[] = [
     run: async () => {
       const root = process.cwd();
       const { viewsDir, atomsDir } = await resolveFractalDirs(root);
-      scanAndWriteViewsDts(root, viewsDir);
-      scanAndWriteAtomsDts(root, atomsDir);
+      const views = scanAndWriteViewsDts(root, viewsDir);
+      const atoms = scanAndWriteAtomsDts(root, atomsDir);
+      clientEntryCount = views.length + atoms.length;
     },
   },
   {
@@ -62,7 +66,16 @@ export const commandSteps: CommandStep[] = [
   },
   {
     label: "Building views",
-    command: "vite build",
+    run: async () => {
+      if (clientEntryCount > 0) {
+        await runCommand("vite build");
+        return;
+      }
+
+      const manifestDir = path.join(process.cwd(), "dist", "assets", ".vite");
+      mkdirSync(manifestDir, { recursive: true });
+      writeFileSync(path.join(manifestDir, "manifest.json"), "{}\n");
+    },
   },
   {
     label: "Emitting manifest module",
