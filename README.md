@@ -108,6 +108,8 @@ Frac builds on the work of [Skybridge](https://github.com/alpic-ai/skybridge) an
 
 This project is not an attempt to erase that work. It is a focused fork that keeps the core SDK ideas we rely on while reshaping the package, docs, scaffolding, and Fractals workflow around our own needs.
 
+See [NOTICE.md](./NOTICE.md) for provenance and licensing notes.
+
 <a href="https://github.com/fractal/frac/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=fractal/frac" alt="Frac contributors">
 </a>

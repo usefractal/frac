@@ -47,7 +47,7 @@
     "frac"
   ],
   "author": "Frédéric Barthelet",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "@modelcontextprotocol/sdk": ">=1.27.0",
     "nodemon": ">=3.0.0",

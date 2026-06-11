@@ -19,7 +19,7 @@
     "frac"
   ],
   "author": "Frédéric Barthelet",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
     "@total-typescript/tsconfig": "^1.0.4",
