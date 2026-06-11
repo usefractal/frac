@@ -102,9 +102,11 @@ We'd love your help improving Frac. Here are a few ways to get involved:
 
 Frac is released under the [MIT License](https://github.com/fractal/frac/blob/main/LICENSE).
 
-### Contributors
+### Acknowledgements
 
-Built and maintained by the Frac contributors.
+Frac builds on the work of [Skybridge](https://github.com/alpic-ai/skybridge) and the [Alpic](https://alpic.ai) team. We have used Skybridge in production, and among the MCP Apps frameworks we could have forked, Skybridge provided the strongest foundation for the direction we want to take Frac.
+
+This project is not an attempt to erase that work. It is a focused fork that keeps the core SDK ideas we rely on while reshaping the package, docs, scaffolding, and Fractals workflow around our own needs.
 
 <a href="https://github.com/fractal/frac/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=fractal/frac" alt="Frac contributors">
