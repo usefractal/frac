@@ -8,7 +8,7 @@ const LINKS = [
     title: "See the examples",
     description:
       "Templates for OAuth, e-commerce, dashboards, games, and many more.",
-    href: "https://docs.usefractal.dev/showcase#examples",
+    href: "https://docs.usefractal.dev/examples/fractals",
   },
   {
     icon: BookOpen,

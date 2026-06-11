@@ -94,7 +94,7 @@ Never assume the reader is already an expert in Frac or MCP Apps. When you menti
    
    </details>
 
-6. **Showcase**: apps built with Frac. This section should include example apps in the Frac repository and third-party apps built with the framework. Examples should be organized into sub-sections such as Basic, Auth, Third-party integrations, and similar categories.
+6. **Examples**: focused examples for Frac-specific concepts. Keep this section small until a real example has been ported and maintained for Frac.
 
 #### User paths, in order of importance
 

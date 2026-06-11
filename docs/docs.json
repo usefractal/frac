@@ -148,52 +148,14 @@
       },
       {
         "tab": "Examples",
-        "pages": [
-          "examples",
-          {
-            "group": "Basic",
-            "pages": ["examples/starter", "examples/everything"]
-          },
-          {
-            "group": "Use cases",
-            "pages": [
-              "examples/capitals",
-              "examples/flight-booking",
-              "examples/ecommerce-carousel",
-              "examples/investigation-game",
-              "examples/productivity",
-              "examples/times-up"
-            ]
-          },
-          {
-            "group": "Auth",
-            "pages": [
-              "examples/auth-clerk",
-              "examples/auth-workos",
-              "examples/auth-stytch",
-              "examples/auth-auth0"
-            ]
-          },
-          {
-            "group": "UI and Component libraries",
-            "pages": ["examples/manifest-ui", "examples/generative-ui"]
-          }
-        ]
+        "pages": ["examples", "examples/fractals"]
       }
     ]
   },
   "redirects": [
     {
-      "source": "/showcase",
-      "destination": "/examples"
-    },
-    {
-      "source": "/showcase/:slug*",
-      "destination": "/examples/:slug*"
-    },
-    {
       "source": "/examples/magic-8-ball",
-      "destination": "/examples/starter"
+      "destination": "/examples/fractals"
     }
   ],
   "navbar": {

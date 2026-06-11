@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://docs.usefractal.dev">Documentation</a> ·
   <a href="https://docs.usefractal.dev/quickstart/create-new-app">Quickstart</a> ·
-  <a href="https://github.com/fractal/frac/tree/main/examples">Examples</a>
+  <a href="https://docs.usefractal.dev/examples/fractals">Fractals example</a>
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@ Features include:
 - **Agent-ready**: skills, CLI, and clear framework conventions so your coding agent can build MCP apps end-to-end.
 - **Type-safe end-to-end**: tRPC-style inference from MCP server tool definition to React view for type safety from server to frontend.
 - **React-first**: Intuitive React Query-style hooks, with advanced state management. 
-- **Example library**: get started quickly with ChatGPT- and Claude-ready app examples for ecommerce, travel, SaaS, and more.
+- **Fractals**: register reusable component primitives and let the model compose them into typed UIs.
 
 They chose to build their MCP apps with Frac: 
 
@@ -110,40 +110,6 @@ Built and maintained by the Frac contributors.
   <img src="https://contrib.rocks/image?repo=fractal/frac" alt="Frac contributors">
 </a>
 
-## Example templates
+## Example
 
-Explore all our example templates in the [Examples](https://docs.usefractal.dev/examples) section of the documentation.
-
-### Basic
-
-| Preview | App | Description | Demo | Code |
-| --- | --- | --- | --- | --- |
-| <img src="docs/images/showcase-example.png" alt="Everything" width="160" /> | Everything | Comprehensive playground app showcasing all Frac hooks and features. | [Try Demo](https://everything.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/everything) |
-
-### Use cases
-
-| Preview | App | Description | Demo | Code |
-| --- | --- | --- | --- | --- |
-| <img src="docs/images/showcase-capitals.png" alt="Capitals Explorer" width="160" /> | Capitals Explorer | Interactive world map with geolocation, country information, and dynamic capital exploration. | [Try Demo](https://capitals.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/capitals) |
-| <img src="docs/images/showcase-flight-booking.png" alt="Flight Booking" width="160" /> | Flight Booking | Flight search carousel with route details, pricing comparison, and external booking. | [Try Demo](https://flight-booking.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/flight-booking) |
-| <img src="docs/images/showcase-ecommerce.png" alt="Ecommerce Carousel" width="160" /> | Ecommerce Carousel | Product carousel with persistent cart, localization, theme switching, and modal dialogs. | [Try Demo](https://ecommerce.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/ecom-carousel) |
-| <img src="docs/images/showcase-investigation-game.png" alt="Investigation Game" width="160" /> | Investigation Game | Multi-screen mystery game with fullscreen mode, dynamic story progression and context asynchronicity demonstration | [Try Demo](https://investigation-game.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/investigation-game) |
-| <img src="docs/images/showcase-productivity.png" alt="Productivity" width="160" /> | Productivity | Interactive analytics dashboard with charts, theme adaptation, localization, fullscreen mode, and bidirectional tool calls. | [Try Demo](https://productivity.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/productivity) |
-| <img src="docs/images/showcase-times-up.png" alt="Time's Up" width="160" /> | Time's Up | Word-guessing party game where the user gives hints and the AI tries to guess. | [Try Demo](https://times-up.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/times-up) |
-| <img src="docs/images/showcase-lumo.png" alt="Lumo Interactive AI Tutor" width="160" /> | Lumo — Interactive AI Tutor | Adaptive tutor with Mermaid diagrams, mind maps, quizzes, and fill-in-the-blank exercises. | - | [View code](https://github.com/connorads/lumo-mcp-app) |
-
-### Auth
-
-| Preview | Provider | Description | Code |
-| --- | --- | --- | --- |
-| <img src="docs/images/showcase-clerk.png" alt="Auth Clerk" width="160" /> | Clerk | Full OAuth authentication with Clerk and personalized coffee shop search. | [View code](https://github.com/fractal/frac/tree/main/examples/auth-clerk) |
-| <img src="docs/images/showcase-workos.png" alt="Auth WorkOS AuthKit" width="160" /> | WorkOS AuthKit | Full OAuth authentication with WorkOS AuthKit and personalized coffee shop search. | [View code](https://github.com/fractal/frac/tree/main/examples/auth-workos) |
-| <img src="docs/images/showcase-stytch.png" alt="Auth Stytch" width="160" /> | Stytch | Full OAuth authentication with Stytch and personalized coffee shop search. | [View code](https://github.com/fractal/frac/tree/main/examples/auth-stytch) |
-| <img src="docs/images/showcase-auth0.png" alt="Auth Auth0" width="160" /> | Auth0 | Full OAuth authentication with Auth0 and personalized coffee shop search. | [View code](https://github.com/fractal/frac/tree/main/examples/auth-auth0) |
-
-### UI and component libraries
-
-| Preview | App | Description | Demo | Code |
-| --- | --- | --- | --- | --- |
-| <img src="docs/images/showcase-manifest-ui.png" alt="Manifest UI" width="160" /> | Manifest UI | Agentic component library example for rich AI-powered experiences. | [Try Demo](https://manifest-ui.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/manifest-ui) |
-| <img src="docs/images/showcase-generative-ui.png" alt="Generative UI" width="160" /> | Generative UI | LLM-generated dynamic UIs with json-render and 36 pre-built shadcn/ui components. | [Try Demo](https://generative-ui.usefractal.dev/try) | [View code](https://github.com/fractal/frac/tree/main/examples/generative-ui) |
+Read the [Fractals example](https://docs.usefractal.dev/examples/fractals) to see how Frac registers reusable React component primitives and renders model-composed UIs from typed prop contracts.
