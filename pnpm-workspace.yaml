@@ -5,7 +5,6 @@ packages:
   - "packages/*"
   - "packages/create-frac/templates/demo"
   - "packages/create-frac/templates/blank"
-  - "examples/*"
 
 allowBuilds:
   esbuild: true
