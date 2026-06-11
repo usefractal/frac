@@ -1,33 +1,30 @@
 ---
 title: Test Your App
-description: "Test your app locally with DevTools, or in ChatGPT Developer Mode and compatible MCP Clients for integration testing."
+description: "Test your app locally and in compatible MCP clients."
 icon: "flask-vial"
 ---
 
-Skybridge provides two ways to test your app: **local DevTools** for rapid iteration, and production testing in ChatGPT and compatible MCP Apps Clients.
+Frac apps expose a normal HTTP MCP endpoint, so you can test locally with MCP tooling and then connect the same endpoint to compatible clients.
 
 ## Local Development (Recommended)
 
-Open `http://localhost:3000/` in your browser to access DevTools. This is the fastest way to develop:
+Start your development server:
 
-- **Tool listing** - See all registered tools and views
-- **Input forms** - Test tools with custom inputs
-- **View preview** - Render views in a mocked Apps SDK environment
-- **Theme/locale switching** - Test different display modes
+```bash
+npm run dev
+```
 
-The DevTools mock the Apps SDK and the MCP apps runtimes, so your view code works identically in both environments.
+Your MCP server will be available at `http://localhost:3000/mcp`.
 
 <Tip>
 **Fast Iteration**
 
-For full details on DevTools, HMR, and Vite plugin, see [Fast Iteration](/concepts/fast-iteration).
+Use Sunpeak, MCPJam, or another local MCP testing tool to call tools, inspect responses, and iterate before connecting a production client.
 </Tip>
-
-
 
 ## Production Testing
 
-When you're ready to test your AI App with an LLM, you can connect it to ChatGPT, Claude, or other compatible MCP clients.
+When you're ready to test your AI App with an LLM, deploy the server or expose it through your own tunnel so the client can reach your `/mcp` endpoint.
 
 <CardGroup cols={3}>
   <Card title="Testing in ChatGPT" icon="message" href="#testing-in-chatgpt">
@@ -47,34 +44,14 @@ ChatGPT uses the Apps SDK runtime and requires a public URL to connect to your a
 
 #### 1. Expose your server
 
-ChatGPT needs a public URL to access your AI App. Start the dev server with the `--tunnel` flag:
-
-<CodeGroup>
-```bash npm
-npm run dev -- --tunnel
-```
-```bash pnpm
-pnpm dev --tunnel
-```
-```bash yarn
-yarn dev --tunnel
-```
-```bash bun
-bun dev --tunnel
-```
-```bash deno
-deno task dev --tunnel
-```
-</CodeGroup>
-
-Skybridge downloads and runs [Alpic tunnel](https://docs.alpic.ai/cli/tunnel) automatically, then prints a public URL (e.g., `https://cool-marmot-fondue-420.alpic.dev/mcp`).
+ChatGPT needs a public URL to access your AI App. Deploy your server or use your preferred tunnel provider, then keep the `/mcp` path on the URL.
 
 #### 2. Connect to ChatGPT
 
 1. In ChatGPT, go to **Profile → Apps → Create app**
-2. Enter the printed `/mcp` URL:
+2. Enter your public `/mcp` URL:
    ```
-   https://cool-marmot-fondue-420.alpic.dev/mcp
+   https://your-domain.example/mcp
    ```
 3. Click **Create**
 
@@ -96,34 +73,14 @@ Claude uses the MCP Apps runtime and requires a public URL to connect to your ap
 
 #### 1. Expose your server
 
-Claude needs a public URL to access your AI App. Start the dev server with the `--tunnel` flag:
-
-<CodeGroup>
-```bash npm
-npm run dev -- --tunnel
-```
-```bash pnpm
-pnpm dev --tunnel
-```
-```bash yarn
-yarn dev --tunnel
-```
-```bash bun
-bun dev --tunnel
-```
-```bash deno
-deno task dev --tunnel
-```
-</CodeGroup>
-
-Skybridge downloads and runs [Alpic tunnel](https://docs.alpic.ai/cli/tunnel) automatically, then prints a public URL (e.g., `https://cool-marmot-fondue-420.alpic.dev/mcp`).
+Claude needs a public URL to access your AI App. Deploy your server or use your preferred tunnel provider, then keep the `/mcp` path on the URL.
 
 #### 2. Connect to Claude
 
 1. In Claude, go to **Settings → Connectors → Add Custom Connector** and configure your MCP server connection
-2. Enter your App name and the printed `/mcp` URL:
+2. Enter your App name and public `/mcp` URL:
    ```
-   https://cool-marmot-fondue-420.alpic.dev/mcp
+   https://your-domain.example/mcp
    ```
 3. Click on **Add**
 
@@ -163,7 +120,7 @@ Connect your server to any desktop MCP client that supports the [ext-apps specif
 
 <CardGroup cols={2}>
   <Card title="Core Concepts" icon="lightbulb" href="/concepts">
-    Learn how Skybridge extends the raw APIs with React hooks
+    Learn how Frac extends the raw APIs with React hooks
   </Card>
   <Card title="Guides" icon="book" href="/guides/fetching-data">
     Learn patterns for data fetching, state management, and more

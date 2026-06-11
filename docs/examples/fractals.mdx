@@ -1,0 +1,122 @@
+---
+title: Fractals
+description: "Build model-composed UIs from registered React component primitives."
+---
+
+Fractals are reusable React component primitives that the model can compose into a UI. You register each Fractal on the server with a component name and prop schema. Frac exposes a generated render tool that accepts JSX using only registered Fractals.
+
+This is useful when you want the model to choose an interface layout while keeping the actual UI components constrained, typed, and owned by your app.
+
+## Project Structure
+
+```txt
+src/
+  server.ts
+  fractals/
+    MetricCard.tsx
+    Stack.tsx
+    HeroPanel.tsx
+```
+
+Frac scans `src/fractals` by default. If that directory does not exist, it falls back to `src/atoms`.
+
+## Register Fractals
+
+```ts src/server.ts
+import { McpServer } from "frac/server";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "dashboard",
+  version: "0.0.1",
+});
+
+server.registerFractal({
+  name: "MetricCard",
+  component: "MetricCard",
+  description: "Displays a single metric with a label, value, and trend.",
+  propsSchema: {
+    label: z.string(),
+    value: z.string(),
+    trend: z.enum(["up", "down", "flat"]),
+  },
+});
+
+server.registerFractal({
+  name: "HeroPanel",
+  component: "HeroPanel",
+  description: "Highlights the most important dashboard summary.",
+  propsSchema: {
+    title: z.string(),
+    summary: z.string(),
+  },
+});
+
+server.registerFractal({
+  name: "Stack",
+  component: "Stack",
+  description: "Stacks child Fractals vertically.",
+  propsSchema: {
+    gap: z.enum(["sm", "md", "lg"]),
+  },
+});
+```
+
+## Create Components
+
+```tsx src/fractals/MetricCard.tsx
+type MetricCardProps = {
+  label: string;
+  value: string;
+  trend: "up" | "down" | "flat";
+};
+
+export default function MetricCard({ label, value, trend }: MetricCardProps) {
+  return (
+    <section>
+      <p>{label}</p>
+      <strong>{value}</strong>
+      <span>{trend}</span>
+    </section>
+  );
+}
+```
+
+```tsx src/fractals/HeroPanel.tsx
+type HeroPanelProps = {
+  title: string;
+  summary: string;
+};
+
+export default function HeroPanel({ title, summary }: HeroPanelProps) {
+  return (
+    <header>
+      <h2>{title}</h2>
+      <p>{summary}</p>
+    </header>
+  );
+}
+```
+
+## Generated Render Tool
+
+When at least one Fractal is registered, Frac creates a render tool for model-composed UIs. The model can return JSX such as:
+
+```tsx
+<Stack gap="md">
+  <HeroPanel
+    title="Weekly activation"
+    summary="Activation is up while support load is flat."
+  />
+  <MetricCard label="Activation rate" value="42%" trend="up" />
+  <MetricCard label="Support tickets" value="18" trend="flat" />
+</Stack>
+```
+
+Frac type-checks the JSX against the registered Fractal names and prop schemas before rendering. The model can compose layouts, but it cannot import arbitrary components or escape the component registry.
+
+## Related
+
+- [McpServer](/api-reference/mcp-server)
+- [registerTool](/api-reference/register-tool)
+- [Fast Iteration](/concepts/fast-iteration)

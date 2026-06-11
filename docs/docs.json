@@ -1,22 +1,22 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Skybridge",
+  "name": "Frac",
   "theme": "mint",
   "colors": {
-    "primary": "#002FFF",
-    "light": "#08F5F9",
-    "dark": "#002FFF"
+    "primary": "#111827",
+    "light": "#06B6D4",
+    "dark": "#111827"
   },
   "favicon": {
-    "light": "/images/SkybridgeFaviconmidnight.svg",
-    "dark": "/images/SkybridgeFaviconwhite.svg"
+    "light": "/images/favicon.ico",
+    "dark": "/images/favicon.ico"
   },
   "logo": {
-    "light": "/images/Skybridgemidnight.svg",
-    "dark": "/images/Skybridgewhite(1).svg"
+    "light": "/images/logo.png",
+    "dark": "/images/logo.png"
   },
   "search": {
-    "prompt": "Search Skybridge docs..."
+    "prompt": "Search Frac docs..."
   },
   "navigation": {
     "tabs": [
@@ -49,8 +49,7 @@
               },
               "quickstart/migrate",
               "quickstart/test-your-app",
-              "quickstart/build-for-production",
-              "quickstart/deploy"
+              "quickstart/build-for-production"
             ]
           },
           {
@@ -76,14 +75,9 @@
             ]
           },
           {
-            "group": "DevTools",
-            "icon": "wrench",
-            "pages": ["devtools/skills", "devtools/devtools"]
-          },
-          {
             "group": "Resources",
             "icon": "circle-question",
-            "pages": ["faq", "telemetry"]
+            "pages": ["faq"]
           }
         ]
       },
@@ -154,97 +148,28 @@
       },
       {
         "tab": "Examples",
-        "pages": [
-          "examples",
-          {
-            "group": "Basic",
-            "pages": ["examples/starter", "examples/everything"]
-          },
-          {
-            "group": "Use cases",
-            "pages": [
-              "examples/capitals",
-              "examples/flight-booking",
-              "examples/ecommerce-carousel",
-              "examples/investigation-game",
-              "examples/productivity",
-              "examples/times-up"
-            ]
-          },
-          {
-            "group": "Auth",
-            "pages": [
-              "examples/auth-clerk",
-              "examples/auth-workos",
-              "examples/auth-stytch",
-              "examples/auth-auth0"
-            ]
-          },
-          {
-            "group": "UI and Component libraries",
-            "pages": ["examples/manifest-ui", "examples/generative-ui"]
-          }
-        ]
+        "pages": ["examples", "examples/fractals"]
       }
     ]
   },
   "redirects": [
     {
-      "source": "/showcase",
-      "destination": "/examples"
-    },
-    {
-      "source": "/showcase/:slug*",
-      "destination": "/examples/:slug*"
-    },
-    {
       "source": "/examples/magic-8-ball",
-      "destination": "/examples/starter"
-    },
-    {
-      "source": "/examples/awaze",
-      "destination": "https://skybridge.tech/showcase"
-    },
-    {
-      "source": "/examples/cottages",
-      "destination": "https://skybridge.tech/showcase"
-    },
-    {
-      "source": "/examples/evaneos",
-      "destination": "https://skybridge.tech/showcase"
-    },
-    {
-      "source": "/examples/lumo",
-      "destination": "https://skybridge.tech/showcase"
+      "destination": "/examples/fractals"
     }
   ],
   "navbar": {
-    "links": [
-      {
-        "label": "Discord",
-        "href": "https://discord.gg/awV4gu74wK",
-        "icon": "discord"
-      }
-    ],
     "primary": {
       "type": "github",
-      "href": "https://github.com/alpic-ai/skybridge"
+      "href": "https://github.com/fractal/frac"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/alpic-ai/skybridge"
+      "github": "https://github.com/fractal/frac"
     }
   },
-  "integrations": {
-    "ga4": {
-      "measurementId": "G-0W0ZMXTSDZ"
-    },
-    "posthog": {
-      "apiKey": "phc_wz9NIcD7SmH0BEN39lARJwJNjXgggazjuWCCt62eeKT"
-    }
-  },
-  "description": "The #1 full stack open-source TS framework for building ChatGPT and MCP Apps",
+  "description": "A full stack TypeScript framework for building ChatGPT and MCP Apps",
   "background": {
     "color": {
       "dark": "#051413"
@@ -263,7 +188,7 @@
   "seo": {
     "indexing": "navigable",
     "metatags": {
-      "og:site_name": "Skybridge Documentation",
+      "og:site_name": "Frac Documentation",
       "og:type": "website"
     }
   },

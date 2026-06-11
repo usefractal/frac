@@ -1,11 +1,8 @@
 packages:
-  - "docs"
-  - "infrastructure"
-  - "landing"
-  - "packages/*"
-  - "packages/create-skybridge/templates/demo"
-  - "packages/create-skybridge/templates/blank"
-  - "examples/*"
+  - "packages/frac"
+  - "packages/create-frac"
+  - "packages/create-frac/templates/demo"
+  - "packages/create-frac/templates/blank"
 
 allowBuilds:
   esbuild: true

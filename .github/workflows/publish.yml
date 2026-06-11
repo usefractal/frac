@@ -1,9 +1,6 @@
 name: Publish
 
 on:
-  push:
-    branches-ignore:
-      - main
   release:
     types: [published]
 
@@ -28,116 +25,43 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm test
+
       - run: pnpm build
 
       - name: Set version
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            # Remove 'v' prefix from release tag (e.g., v1.0.0 -> 1.0.0)
-            VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=${GITHUB_REF#refs/tags/v}
 
-            # Validate version format (strict X.Y.Z only)
-            if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              echo "❌ Error: Invalid version format: '$VERSION'"
-              echo "Expected format: X.Y.Z (major.minor.patch)"
-              echo "Examples: 1.0.0, 1.2.3, 2.0.0"
-              exit 1
-            fi
-
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "tag=latest" >> $GITHUB_OUTPUT
-            echo "✅ Release version: $VERSION"
-            echo "Release name: ${{ github.event.release.name }}"
-            echo "Release body: ${{ github.event.release.body }}"
-          else
-            echo "version=0.0.0-dev.${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-            echo "tag=dev" >> $GITHUB_OUTPUT
-            echo "✅ Dev version: 0.0.0-dev.${GITHUB_SHA::7}"
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: invalid release version '$VERSION'. Expected X.Y.Z."
+            exit 1
           fi
 
-      - name: Setting version for core
-        working-directory: ./packages/core
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=latest" >> $GITHUB_OUTPUT
+
+      - name: Set frac version
+        working-directory: ./packages/frac
         run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
-      - name: Setting version for create-skybridge
-        working-directory: ./packages/create-skybridge
+      - name: Set create-frac version
+        working-directory: ./packages/create-frac
         run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
-      - name: Setting version for devtools
-        working-directory: ./packages/devtools
-        run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
-
-      - name: Publish core to npm
-        working-directory: ./packages/core
+      - name: Publish frac
+        working-directory: ./packages/frac
         run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
 
-      # Templates use `skybridge: workspace:*` so dev/CI build against the
-      # local package. pnpm doesn't rewrite that when bundling the templates
-      # into create-skybridge, so pin it to the just-published version before
-      # publishing create-skybridge.
-      - name: Pin demo template skybridge dep for publish
-        working-directory: ./packages/create-skybridge/templates/demo
-        run: pnpm pkg set 'dependencies.skybridge=^${{ steps.version.outputs.version }}'
+      - name: Pin demo template frac dep for publish
+        working-directory: ./packages/create-frac/templates/demo
+        run: pnpm pkg set 'dependencies.frac=^${{ steps.version.outputs.version }}'
 
-      - name: Pin blank template skybridge dep for publish
-        working-directory: ./packages/create-skybridge/templates/blank
-        run: pnpm pkg set 'dependencies.skybridge=^${{ steps.version.outputs.version }}'
+      - name: Pin blank template frac dep for publish
+        working-directory: ./packages/create-frac/templates/blank
+        run: pnpm pkg set 'dependencies.frac=^${{ steps.version.outputs.version }}'
 
-      - name: Publish create-skybridge to npm
-        working-directory: ./packages/create-skybridge
+      - name: Publish create-frac
+        working-directory: ./packages/create-frac
         run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
-
-      - name: Publish devtools to npm
-        working-directory: ./packages/devtools
-        run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
-
-      - name: Restore templates workspace deps
-        if: github.event_name == 'release'
-        run: git checkout -- packages/create-skybridge/templates/demo/package.json packages/create-skybridge/templates/blank/package.json
-
-      - name: Deploy docs to Mintlify
-        if: github.event_name == 'release'
-        run: git push origin HEAD:mintlify --force
-
-      - name: Bump versions
-        if: github.event_name == 'release'
-        run: node scripts/bump.js ${{ steps.version.outputs.version }} && pnpm install --no-frozen-lockfile
-
-      # The prepublishOnly script in packages/core copies the root README into
-      # the package for npm. Clean it up so it doesn't leak into the bump PR.
-      - name: Clean up copied README
-        if: github.event_name == 'release'
-        run: rm -f packages/core/README.md
-
-      - name: Open bump PR
-        if: github.event_name == 'release'
-        uses: peter-evans/create-pull-request@v8
-        with:
-          commit-message: "chore: bump skybridge versions to ${{ steps.version.outputs.version }}"
-          title: "chore: bump skybridge versions to ${{ steps.version.outputs.version }}"
-          body: "Automated version bump of skybridge dependencies in templates and examples."
-          branch: chore/bump-versions
-          base: main
-          delete-branch: true
-
-  notify-discord:
-    if: github.event_name == 'release'
-    needs: publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify Discord
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          RELEASE_VERSION: ${{ github.event.release.tag_name }}
-          RELEASE_URL: ${{ github.event.release.html_url }}
-          RELEASE_BODY: ${{ github.event.release.body }}
-        run: |
-          BODY=$(echo "$RELEASE_BODY" | cut -c 1-1500)
-          PAYLOAD=$(jq -n \
-            --arg title "Skybridge $RELEASE_VERSION released" \
-            --arg url "$RELEASE_URL" \
-            --arg description "$BODY" \
-            --argjson color 5814783 \
-            '{embeds: [{title: $title, url: $url, description: $description, color: $color}]}')
-          curl -f -H "Content-Type: application/json" -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"

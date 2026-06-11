@@ -1,0 +1,11 @@
+{
+  "extends": "frac/tsconfig",
+
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+
+  "include": ["src", ".frac/**/*.d.ts"]
+}
