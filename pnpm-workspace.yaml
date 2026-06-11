@@ -3,8 +3,8 @@ packages:
   - "infrastructure"
   - "landing"
   - "packages/*"
-  - "packages/create-skybridge/templates/demo"
-  - "packages/create-skybridge/templates/blank"
+  - "packages/create-frac/templates/demo"
+  - "packages/create-frac/templates/blank"
   - "examples/*"
 
 allowBuilds:

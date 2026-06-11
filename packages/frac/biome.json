@@ -1,0 +1,14 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+  "extends": ["../../biome.json"],
+  "vcs": {
+    "enabled": false
+  },
+  "files": {
+    "includes": [
+      "!!src/server/templates.generated.js",
+      "!!**/dist",
+      "!!**/node_modules"
+    ]
+  }
+}

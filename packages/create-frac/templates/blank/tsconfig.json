@@ -1,0 +1,5 @@
+{
+  "extends": "frac/tsconfig",
+
+  "include": ["src", ".frac/**/*.d.ts"]
+}

@@ -5,14 +5,14 @@ icon: "bolt"
 iconType: "regular"
 ---
 
-The easiest way to bootstrap a project is using our [🧠 Skill](/devtools/skills). To get a running codebase right away, you can use our starter template — it comes pre-configured with an MCP server, a basic UI view, and a full dev server with a local emulator and HMR.
+The easiest way to bootstrap a project is using the starter template. It comes pre-configured with an MCP server, a basic UI view, and a development server with HMR.
 
 <Tip>
 **New to ChatGPT or MCP Apps**? Read [Fundamentals](/fundamentals) first to understand the concepts.
 </Tip>
 
 <Tip>
-**Don't know if you should start with a ChatGPT or MCP App?** It doesn't matter! With Skybridge, you build your App once, and it runs seamlessly with both runtimes.
+**Don't know if you should start with a ChatGPT or MCP App?** It doesn't matter! With Frac, you build your App once, and it runs seamlessly with both runtimes.
 </Tip>
 
 ## Scaffold your project
@@ -22,19 +22,19 @@ Set up your app with a single command:
 
 <CodeGroup>
 ```bash npm
-npm create skybridge@latest my-app
+npm create frac@latest my-app
 ```
 ```bash pnpm
-pnpm create skybridge my-app
+pnpm create frac my-app
 ```
 ```bash yarn
-yarn create skybridge my-app
+yarn create frac my-app
 ```
 ```bash bun
-bun create skybridge my-app
+bun create frac my-app
 ```
 ```bash deno
-deno init --npm skybridge my-app
+deno init --npm frac my-app
 ```
 </CodeGroup>
 
@@ -76,11 +76,11 @@ deno task dev
 ```
 </CodeGroup>
 
-This runs the `skybridge` command, which starts a development server with the following features:
+This runs `frac dev`, which starts a development server with the following features:
 
 ### What it does
 
-The `skybridge` command:
+The `frac` command:
 - **Starts an Express server** on port 3000 that packages:
   - An MCP endpoint on `/mcp` - the App Backend
   - A React application on Vite HMR dev server - the App Frontend
@@ -88,36 +88,13 @@ The `skybridge` command:
 
 ### Development workflow
 
-When you run `skybridge`:
+When you run `frac`:
 1. The server starts and displays the welcome screen in your terminal
-2. You can access **DevTools** at `http://localhost:3000/` to test your app locally
-3. The **MCP server** is available at `http://localhost:3000/mcp`
-4. **File watching** is enabled - changes to server code will automatically restart the server
-5. **Hot Module Reload (HMR)** is active for Views components - changes appear instantly in the host without reconnecting
+2. The **MCP server** is available at `http://localhost:3000/mcp`
+3. **File watching** is enabled - changes to server code will automatically restart the server
+4. **Hot Module Reload (HMR)** is active for View components - changes appear instantly in the host without reconnecting
 
-### Exposing a public URL
-
-When you need to connect a remote client like ChatGPT or Claude, pass the `--tunnel` flag:
-
-<CodeGroup>
-```bash npm
-npm run dev -- --tunnel
-```
-```bash pnpm
-pnpm dev --tunnel
-```
-```bash yarn
-yarn dev --tunnel
-```
-```bash bun
-bun dev --tunnel
-```
-```bash deno
-deno task dev --tunnel
-```
-</CodeGroup>
-
-Skybridge downloads and runs [Alpic tunnel](https://docs.alpic.ai/cli/tunnel) automatically, then prints a public `/mcp` URL and an LLM Playground `/try` URL. Add `--verbose` to stream tunnel logs.
+Use a local MCP testing tool such as Sunpeak or MCPJam to exercise tools and inspect responses while developing.
 
 ## Next steps
 

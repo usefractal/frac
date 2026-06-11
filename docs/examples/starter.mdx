@@ -1,13 +1,13 @@
 ---
 title: Starter
-description: The default app scaffolded by `npm create skybridge`. A guided onboarding tour through Skybridge's core APIs.
+description: The default app scaffolded by `npm create frac`. A guided onboarding tour through Frac's core APIs.
 ---
 
-The Starter is what `npm create skybridge` scaffolds. It's a short, interactive onboarding deck featuring the Skybridge mascot and a swappable hat. The deck walks new users through Skybridge's core primitives: reading tool output, sharing view state with the model, and triggering tools from the view.
+The Starter is what `npm create frac` scaffolds. It's a short, interactive onboarding deck featuring the Frac mascot and a swappable hat. The deck walks new users through Frac's core primitives: reading tool output, sharing view state with the model, and triggering tools from the view.
 
 <img
   src="/images/showcase-starter.png"
-  alt="Skybridge Starter"
+  alt="Frac Starter"
   style={{ width: "100%", maxWidth: "960px", borderRadius: "12px" }}
 />
 
@@ -17,7 +17,7 @@ The Starter is what `npm create skybridge` scaffolds. It's a short, interactive 
   <Card
     title="View source on GitHub"
     icon="github"
-    href="https://github.com/alpic-ai/apps-sdk-template"
+    href="https://github.com/fractal/frac/tree/main/packages/create-frac/templates/demo"
   >
     Browse the full template code.
   </Card>
@@ -26,7 +26,7 @@ The Starter is what `npm create skybridge` scaffolds. It's a short, interactive 
     icon="terminal"
     href="/quickstart/create-new-app"
   >
-    Scaffold the Starter locally with `npm create skybridge`.
+    Scaffold the Starter locally with `npm create frac`.
   </Card>
 </CardGroup>
 
@@ -37,14 +37,14 @@ The Starter registers two tools on the server and a single view that walks throu
 - **`start`**: opens the onboarding view, with an optional `name` input the view reads back to greet the user.
 - **`get-fortune-cookie`**: a plain tool the view calls on demand to fetch a random prediction.
 
-Each step of the deck highlights one Skybridge API:
+Each step of the deck highlights one Frac API:
 
 1. **Reading tool output**: the view hydrates with the `name` passed to `start`.
 2. **Sharing view state**: clicking "Change my hat" updates persisted view state and surfaces the current hat to the model via `data-llm`.
 3. **Calling tools**: the view invokes `get-fortune-cookie` from a button and renders the result.
 4. **Examples & docs**: outro linking to further reading.
 
-## Skybridge APIs used
+## Frac APIs used
 
 - [`useToolInfo`](/api-reference/use-tool-info): read the input and output of the tool that opened the view.
 - [`useViewState`](/api-reference/use-view-state): persist UI state on the host and expose it to the model.

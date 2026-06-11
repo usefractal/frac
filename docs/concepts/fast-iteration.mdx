@@ -1,144 +1,99 @@
 ---
 title: Fast Iteration
-description: "Develop Apps locally with Skybridge's DevTools and Vite HMR for instant feedback without tunneling."
+description: "Develop Apps locally with Frac's Vite plugin, hot reload, and MCP testing tools."
 ---
 
+**Problem:** Testing views only inside remote MCP clients is slow. It requires a reachable URL, manual reconnection, and repeated model prompts.
 
-**Problem:** Testing views in remote MCP Clients (e.g. ChatGPT, Claude, etc.) is slow. It requires HTTP tunneling, manual refreshes, and provides limited debugging feedback.
+**Solution:** Frac keeps the server and views running locally while Vite handles view hot reload. Use a local MCP testing tool such as Sunpeak or MCPJam for quick tool calls, then validate in ChatGPT, Claude, or another target client before shipping.
 
-**Solution:** Skybridge includes DevTools and a Vite HMR plugin that let you develop views entirely on your machine with instant feedback.
+## Development Loop
 
-## The Challenge
+Start the development server:
 
-When building Apps the traditional way, your development loop looks like:
+```bash
+pnpm dev
+```
 
-1. Make a code change
-2. Restart your server
-3. Start the tunnel
-4. Go to Claude or ChatGPT dev mode
-5. Trigger the tool manually by chatting
-6. Wait for the view to load
-7. See if your change worked
-8. Repeat
+Frac starts:
 
-This can take 30-60 seconds per iteration. With complex views, that adds up fast.
-
-## The Skybridge Approach
-
-With Skybridge, the loop becomes:
-
-1. Make a code change
-2. See it instantly in your browser
-
-That's it. DevTools mocks the Apps SDK (ChatGPT) environment, and Vite's HMR updates your view without a full reload.
-
-## DevTools
-
-When you run `pnpm dev`, Skybridge starts:
 - Your MCP server at `http://localhost:3000/mcp`
-- DevTools UI at `http://localhost:3000/`
+- A Vite dev server for your React views
+- File watching for server-side code
+- Hot Module Replacement for view code
 
-The DevTools UI provides:
-- **Tool listing** - See all registered tools and views
-- **Input forms** - Test tools with custom inputs
-- **View preview** - Render views in a mocked Apps SDK (ChatGPT) environment
+The normal loop is:
 
-<Note>
-**MCP Apps and DevTools**
-
-DevTools uses the **Apps SDK runtime** (mocked `window.openai`). MCP Apps view rendering is not yet supported in DevTools. For MCP Apps, use DevTools for tool development and UI logic; validate views in a real client (e.g. [Goose](https://goose.ai/), Claude) before shipping. See [DevTools Guide](/devtools) and [Test Your App](/quickstart/test-your-app#testing-in-claude).
-</Note>
-
-<Info>
-**Full DevTools Guide**
-
-For comprehensive documentation on all DevTools features, including view inspection, MCP client logs, and custom integration, see the [DevTools Guide](/devtools).
-</Info>
-
-<img src="/images/devtools-landing.png" alt="Skybridge DevTools" style={{maxWidth: '100%', borderRadius: '8px', border: '1px solid #e0e0e0'}} />
+1. Make a code change.
+2. Let the server restart or the view hot-reload.
+3. Call the MCP tool from Sunpeak, MCPJam, or your target client.
+4. Inspect the structured output and rendered view.
 
 ## HMR with Vite Plugin
 
-Skybridge includes a Vite plugin that enables Hot Module Replacement for views:
+Frac includes a Vite plugin that enables Hot Module Replacement for views:
 
 ```typescript
 // vite.config.ts
-import { skybridge } from "skybridge/vite";
+import { frac } from "frac/vite";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react(), skybridge()],
+  plugins: [react(), frac()],
 });
 ```
 
 The plugin:
-- **Auto-discovers views** in `src/views/` (both flat files and directories)
-- **Enables HMR** so changes appear instantly without page reload
-- **Transforms `data-llm`** attributes at build time
-- **Configures build output** with proper asset paths
+
+- Auto-discovers views in `src/views/`
+- Enables HMR so view changes update without a full rebuild
+- Transforms `data-llm` attributes at build time
+- Configures build output with stable asset paths
 
 <Info>
 **Starter template required**
 
-These features require the Skybridge starter template structure (`pnpm create skybridge`). If you're adding Skybridge to an existing app, you'll need to configure the Vite plugin manually.
+These features are preconfigured in projects created with `pnpm create frac`. If you're adding Frac to an existing app, configure the Vite plugin manually.
 </Info>
 
-When you save a file, only the changed component re-renders. Form inputs, scroll position, and local state are preserved.
+## Runtime Detection
 
-## Automatic Environment Detection
-
-Your view code works identically in ChatGPT, MCP Apps clients like Claude, and local DevTools. Skybridge detects the environment and uses the appropriate communication layer:
+Your view code works across ChatGPT and MCP Apps clients. Frac detects the environment and uses the appropriate communication layer:
 
 | Environment | Communication |
 |-------------|---------------|
 | ChatGPT | `window.openai` API |
-| MCP Apps (Goose, Claude, …) | MCP protocol via postMessage |
-| DevTools | Mocked Apps SDK (postMessage) |
-You don't need to know which is active—just use the hooks.
+| MCP Apps clients | MCP Apps postMessage protocol |
+
+You do not need runtime-specific branches for common hooks.
 
 ## When to Use What
 
-**DevTools (90% of development time)**
-- Rapid UI iteration
-- Testing tool inputs/outputs
-- Debugging state management
+**Local MCP tooling**
+
+- Rapid tool iteration
+- Input and output inspection
+- Debugging state and rendering issues
 - Day-to-day development
 
-**ChatGPT, Claude, or other MCP Apps clients (10% of development time)**
+**ChatGPT, Claude, or other MCP Apps clients**
+
 - Final integration testing
 - Real LLM conversation flow
-- Verifying `data-llm` context
+- Host-specific behavior
 - Pre-ship validation
 
 <Tip>
 **Workflow**
 
-Build locally → validate in [ChatGPT](/quickstart/test-your-app#testing-in-chatgpt) or [MCP Apps](/quickstart/test-your-app#testing-in-claude) → ship. 
+Build locally, validate with local MCP tooling, then connect a deployed or tunneled `/mcp` URL to your target client.
 
 See [Test Your App](/quickstart/test-your-app) for detailed testing setup instructions.
 </Tip>
 
-## DevTools Features
-
-The DevTools UI includes:
-
-### Tool Inspector
-See all registered tools and their schemas. Click to fill input forms automatically.
-
-### View Preview
-Renders your view in an iframe with mocked `window.openai`. Supports:
-- Theme switching (light/dark)
-- Display mode switching (pip/inline/fullscreen)
-- Locale changing
-
-
-### Response Inspector
-View the full tool response including `content`, `structuredContent`, and `_meta`.
-
 ## Related
 
-- [DevTools Guide](/devtools) - Complete DevTools documentation and features
-- [Test Your App](/quickstart/test-your-app) - Full testing workflow including ChatGPT and MCP Apps clients
-- [useLayout API](/api-reference/use-layout) - Access theme and layout info
-- [useCallTool API](/api-reference/use-call-tool) - Make tool calls from views
+- [Test Your App](/quickstart/test-your-app)
+- [useLayout API](/api-reference/use-layout)
+- [useCallTool API](/api-reference/use-call-tool)
