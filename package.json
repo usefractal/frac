@@ -4,11 +4,11 @@
   "description": "Frac is a framework for building ChatGPT and MCP Apps",
   "type": "module",
   "scripts": {
-    "build": "pnpm --filter \"./packages/*\" build",
-    "test": "pnpm -r --if-present test",
-    "format": "pnpm -r --if-present format",
-    "test:unit": "pnpm -r --if-present test:unit",
-    "test:format": "pnpm -r --if-present test:format",
+    "build": "pnpm --filter frac build && pnpm --filter create-frac build",
+    "test": "pnpm run test:unit && pnpm run test:format",
+    "format": "pnpm --filter frac format && pnpm --filter create-frac format",
+    "test:unit": "pnpm --filter frac test:unit && pnpm --filter create-frac test:unit",
+    "test:format": "pnpm --filter frac test:format && pnpm --filter create-frac test:format",
     "docs:dev": "pnpm --filter @frac/docs dev",
     "bump": "node scripts/bump.js && pnpm i"
   },

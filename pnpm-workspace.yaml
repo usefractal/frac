@@ -1,8 +1,6 @@
 packages:
-  - "docs"
-  - "infrastructure"
-  - "landing"
-  - "packages/*"
+  - "packages/frac"
+  - "packages/create-frac"
   - "packages/create-frac/templates/demo"
   - "packages/create-frac/templates/blank"
 
