@@ -17,6 +17,8 @@ jobs:
         include:
           - name: Unit Tests
             command: pnpm --filter frac test:unit && pnpm --filter create-frac test:unit
+          - name: Lint & Format
+            command: pnpm --filter frac test:format && pnpm --filter create-frac test:format
           - name: Build
             command: pnpm --filter frac build && pnpm --filter create-frac build
     steps:
