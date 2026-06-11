@@ -9,8 +9,7 @@
     "format": "pnpm --filter frac format && pnpm --filter create-frac format",
     "test:unit": "pnpm --filter frac test:unit && pnpm --filter create-frac test:unit",
     "test:format": "pnpm --filter frac test:format && pnpm --filter create-frac test:format",
-    "docs:dev": "pnpm --filter @frac/docs dev",
-    "bump": "node scripts/bump.js && pnpm i"
+    "docs:dev": "pnpm --dir docs dev"
   },
   "keywords": [
     "chatgpt",
