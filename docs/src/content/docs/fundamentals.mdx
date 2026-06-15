@@ -12,7 +12,7 @@ frac enables you to build **ChatGPT Apps** and **MCP Apps** - interactive UI vie
 In MCP Apps clients, the model triggers your tool, and the client then renders both the assistant response and your view from the tool result.
 
 <img
-  src="/images/fundamentals-chatgpt-apps.png"
+  src={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/images/fundamentals-chatgpt-apps.png`}
   alt="MCP Apps Architecture"
   style={{ width: "100%", maxWidth: "800px", display: "block", margin: "0 auto" }}
 />
@@ -75,7 +75,7 @@ frac supports the two main runtime environments for rendering views:
 </CardGroup>
 
 
-frac abstracts away the differences between these runtime environments so you can write your views once and run them anywhere. Learn more in our <a href="/concepts/write-once-run-everywhere">Write Once, Run Everywhere</a> guide.
+frac abstracts away the differences between these runtime environments so you can write your views once and run them anywhere. Learn more in our [Write Once, Run Everywhere](/concepts/write-once-run-everywhere) guide.
 
 
 ## Runtimes Comparison at a Glance

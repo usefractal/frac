@@ -21,7 +21,7 @@ Here's what happens when an MCP Apps client renders a view:
 
 The view–host connection looks like this:
 
-<img src="/images/mcp-apps-explainer.avif" alt="MCP Apps architecture: MCP Server, MCP Host (ChatGPT, Claude), Host UI with Sandbox and Guest App iframe" style={{ width: "100%", maxWidth: "600px", display: "block", margin: "0 auto" }} />
+<img src={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/images/mcp-apps-explainer.avif`} alt="MCP Apps architecture: MCP Server, MCP Host (ChatGPT, Claude), Host UI with Sandbox and Guest App iframe" style={{ width: "100%", maxWidth: "600px", display: "block", margin: "0 auto" }} />
 
 The Host UI in this diagram designates the MCP Client (Claude, Goose, VSCode, etc.), and the Guest App is your App running in an iframe.
 

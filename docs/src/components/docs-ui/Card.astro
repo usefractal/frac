@@ -6,10 +6,13 @@ type Props = {
 };
 
 const { title, icon, href } = Astro.props;
+const basePath = import.meta.env.BASE_URL ?? "/";
+const basePrefix = basePath === "/" ? "" : basePath.replace(/\/$/, "");
+const cardHref = href?.startsWith("/") && !href.startsWith("//") ? `${basePrefix}${href}` : href;
 const Tag = href ? "a" : "div";
 ---
 
-<Tag class="frac-card" href={href}>
+<Tag class="frac-card" href={cardHref}>
   <div class="frac-card__header">
     {icon && <span class="frac-card__icon" aria-hidden="true">{icon}</span>}
     <strong>{title}</strong>

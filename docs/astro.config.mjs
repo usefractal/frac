@@ -1,9 +1,62 @@
 import { fileURLToPath } from "node:url";
+import { unified } from "@astrojs/markdown-remark";
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
+const docsSite = process.env.DOCS_SITE ?? "https://docs.usefractal.dev";
+const docsBase = process.env.DOCS_BASE_PATH ?? "/";
+const docsBasePrefix = docsBase === "/" ? "" : docsBase.replace(/\/$/, "");
+
+const prefixRootPath = (value) => {
+  if (!docsBasePrefix || typeof value !== "string") {
+    return value;
+  }
+
+  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith(`${docsBasePrefix}/`)) {
+    return value;
+  }
+
+  return `${docsBasePrefix}${value}`;
+};
+
+const walk = (node, visitor) => {
+  visitor(node);
+
+  if (Array.isArray(node.children)) {
+    for (const child of node.children) {
+      walk(child, visitor);
+    }
+  }
+};
+
+const prefixMarkdownUrls = () => (tree) => {
+  walk(tree, (node) => {
+    if ((node.type === "link" || node.type === "image") && typeof node.url === "string") {
+      node.url = prefixRootPath(node.url);
+    }
+  });
+};
+
+const prefixHtmlUrls = () => (tree) => {
+  walk(tree, (node) => {
+    if (node.type !== "element" || !node.properties) {
+      return;
+    }
+
+    node.properties.href = prefixRootPath(node.properties.href);
+    node.properties.src = prefixRootPath(node.properties.src);
+  });
+};
+
 export default defineConfig({
-  site: "https://docs.usefractal.dev",
+  site: docsSite,
+  base: docsBase,
+  markdown: {
+    processor: unified({
+      remarkPlugins: [prefixMarkdownUrls],
+      rehypePlugins: [prefixHtmlUrls],
+    }),
+  },
   vite: {
     resolve: {
       alias: {
