@@ -2,7 +2,7 @@
 
 frac is derived from [Skybridge](https://github.com/alpic-ai/skybridge), an open-source framework by the [Alpic](https://alpic.ai) team for building ChatGPT and MCP Apps.
 
-The Alpic team created one of the strongest foundations for building ChatGPT and MCP Apps, and their work made frac possible. frac starts from Skybridge's MCP server and app runtime abstractions, preserves the original MIT license and copyright notice, and continues development under its own package name, scaffolding, documentation, local testing tooling, and project direction.
+We have used Skybridge in production, and among the MCP Apps frameworks we evaluated, it provided the strongest foundation for the direction we want to take frac. The Alpic team's design decisions, engineering effort, and open-source release made this project possible. frac preserves that foundation, the original MIT license, and the original copyright notice while evolving its package name, scaffolding, documentation, local testing tooling, and project direction.
 
 ## Upstream Attribution
 

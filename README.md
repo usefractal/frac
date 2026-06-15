@@ -104,9 +104,9 @@ frac is released under the [MIT License](https://github.com/fractal/frac/blob/ma
 
 ### Acknowledgements
 
-frac builds on the excellent work of [Skybridge](https://github.com/alpic-ai/skybridge) and the [Alpic](https://alpic.ai) team. They created one of the strongest foundations for building ChatGPT and MCP Apps, and their work made this project possible.
+frac builds on the excellent work of [Skybridge](https://github.com/alpic-ai/skybridge) and the [Alpic](https://alpic.ai) team.
 
-We have used Skybridge in production and deeply appreciate the design decisions, engineering effort, and open-source release that gave frac its starting point. frac continues from that foundation while evolving the package, docs, scaffolding, and local development workflow for our own goals.
+We have used Skybridge in production, and among the MCP Apps frameworks we evaluated, it provided the strongest foundation for the direction we want to take frac. We deeply appreciate the design decisions, engineering effort, and open-source release that made this project possible. frac preserves that foundation while evolving the package, docs, scaffolding, and local development workflow around our own goals.
 
 This fork is based on Skybridge commit [`6a7a272a36da19de62d86fda5fe7b58f38c32c2a`](https://github.com/alpic-ai/skybridge/commit/6a7a272a36da19de62d86fda5fe7b58f38c32c2a).
 
