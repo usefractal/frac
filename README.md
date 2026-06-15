@@ -41,20 +41,6 @@ Features include:
 - **React-first**: Intuitive React Query-style hooks, with advanced state management. 
 - **Fractals**: register reusable component primitives and let the model compose them into typed UIs.
 
-They chose to build their MCP apps with frac:
-
-<p align="center">
-  <a href="https://www.datadoghq.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/datadog-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/datadog-light.svg" alt="Datadog" height="24"></picture></a>
-  &nbsp;&nbsp;
-  <a href="https://bitmovin.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/bitmovin-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/bitmovin-light.svg" alt="Bitmovin" height="22"></picture></a>
-  &nbsp;&nbsp;
-  <a href="https://www.evaneos.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/evaneos-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/evaneos-light.svg" alt="Evaneos" height="18"></picture></a>
-  &nbsp;&nbsp;
-  <a href="https://www.touchstream.media"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/touchstream-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/touchstream-light.svg" alt="Touchstream" height="24"></picture></a>
-  &nbsp;&nbsp;
-  <a href="https://www.cottages.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/cottages-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/cottages-light.svg" alt="Cottages.com" height="24"></picture></a>
-</p>
-
 ## Get started
 
 **For agents**
