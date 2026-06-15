@@ -1,11 +1,11 @@
 ---
-title: Use frac/web
-description: "Add React hooks and utilities to your App views with frac/web standalone package."
+title: Use @usefractal/frac/web
+description: "Add React hooks and utilities to your App views with @usefractal/frac/web standalone package."
 ---
 
-# Use frac/web
+# Use @usefractal/frac/web
 
-This guide shows you how to use `frac/web` without `frac/server` to add React hooks and utilities to your views.
+This guide shows you how to use `@usefractal/frac/web` without `@usefractal/frac/server` to add React hooks and utilities to your views.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ pnpm add frac
 
 ## Package overview
 
-`frac/web` provides React hooks and utilities for building advanced Apps:
+`@usefractal/frac/web` provides React hooks and utilities for building advanced Apps:
 
 ### State Management
 - **[`useToolInfo`](/api-reference/use-tool-info)**: Get initial tool input, output and metadata
@@ -43,7 +43,7 @@ pnpm add frac
 
 ### Others
 - **[`useAppsSdkContext`](/api-reference/use-apps-sdk-context)**: Low-level hook to subscribe to `window.openai` state values
-- **[`generateHelpers`](/api-reference/generate-helpers)**: Generate typed helpers for your views (requires `frac/server`)
+- **[`generateHelpers`](/api-reference/generate-helpers)**: Generate typed helpers for your views (requires `@usefractal/frac/server`)
 
 Each hook is documented in the API Reference section in the sidebar.
 
@@ -53,7 +53,7 @@ Here's a simple view using frac hooks:
 
 ```tsx
 // src/views/my-view.tsx
-import { useToolInfo } from "frac/web";
+import { useToolInfo } from "@usefractal/frac/web";
 
 export default function MyView() {
   const toolInfo = useToolInfo();
@@ -77,10 +77,10 @@ export default function MyView() {
 
 ## Type safety without server
 
-If you're not using `frac/server`, you won't get automatic type inference. You can still add types manually:
+If you're not using `@usefractal/frac/server`, you won't get automatic type inference. You can still add types manually:
 
 ```tsx
-import { useToolInfo } from "frac/web";
+import { useToolInfo } from "@usefractal/frac/web";
 
 interface MyToolInput {
   query: string;

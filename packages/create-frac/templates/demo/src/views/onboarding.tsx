@@ -1,6 +1,6 @@
 import "@/index.css";
 
-import { useLayout } from "frac/web";
+import { useLayout } from "@usefractal/frac/web";
 import { useState } from "react";
 import Nav from "./components/nav.js";
 import Progress from "./components/progress.js";

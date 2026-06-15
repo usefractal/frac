@@ -79,7 +79,7 @@ export function generateViewsDts(views: DiscoveredView[]): string {
   return [
     "export {};",
     "",
-    'declare module "frac/server" {',
+    'declare module "@usefractal/frac/server" {',
     "  interface ViewNameRegistry {",
     entries,
     "  }",

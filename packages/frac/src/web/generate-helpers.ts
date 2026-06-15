@@ -62,7 +62,7 @@ type TypedToolInfoReturn<TInput, TOutput, TResponseMetadata> = ToolState<
  * ```typescript
  * // src/helpers.ts (one-time setup)
  * import type { AppType } from "./server";
- * import { generateHelpers } from "frac/web";
+ * import { generateHelpers } from "@usefractal/frac/web";
  *
  * export const { useCallTool, useToolInfo } = generateHelpers<AppType>();
  * ```

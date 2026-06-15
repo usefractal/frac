@@ -1,10 +1,10 @@
 {
-  "name": "frac",
+  "name": "@usefractal/frac",
   "version": "1.0.0",
   "description": "frac is a framework for building MCP Apps",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractal/frac.git"
+    "url": "https://github.com/fractal-mcp/frac.git"
   },
   "type": "module",
   "engines": {
@@ -102,10 +102,6 @@
     "bin": "frac",
     "commands": "./dist/commands",
     "dirname": "frac",
-    "topicSeparator": " ",
-    "helpClass": {
-      "target": "./dist/commands/create",
-      "identifier": "FracHelp"
-    }
+    "topicSeparator": " "
   }
 }

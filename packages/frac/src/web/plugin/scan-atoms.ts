@@ -84,7 +84,7 @@ export function generateAtomsDts(atoms: DiscoveredAtom[]): string {
   return [
     "export {};",
     "",
-    'declare module "frac/server" {',
+    'declare module "@usefractal/frac/server" {',
     "  interface AtomNameRegistry {",
     entries,
     "  }",

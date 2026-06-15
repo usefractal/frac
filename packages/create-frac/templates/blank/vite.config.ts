@@ -1,4 +1,4 @@
-import { frac } from "frac/vite";
+import { frac } from "@usefractal/frac/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({

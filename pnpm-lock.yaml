@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  frac: workspace:*
+  '@usefractal/frac': workspace:*
   '@mintlify/prebuild>js-yaml': ^4.1.1
   '@mintlify/previewing>js-yaml': ^4.1.1
   '@mintlify/scraping>js-yaml': ^4.1.1
@@ -69,7 +69,7 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(zod@4.3.6)
-      frac:
+      '@usefractal/frac':
         specifier: workspace:*
         version: link:../../../frac
       vite:
@@ -88,7 +88,7 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(zod@4.3.6)
-      frac:
+      '@usefractal/frac':
         specifier: workspace:*
         version: link:../../../frac
       lucide-react:

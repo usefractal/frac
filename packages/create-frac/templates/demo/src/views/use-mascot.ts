@@ -1,4 +1,4 @@
-import { useViewState } from "frac/web";
+import { useViewState } from "@usefractal/frac/web";
 import { useEffect } from "react";
 import beret from "./images/mascot/beret.png";
 import chapka from "./images/mascot/chapka.png";

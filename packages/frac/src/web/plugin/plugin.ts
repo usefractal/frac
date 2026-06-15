@@ -40,7 +40,7 @@ export type FractalPluginOptions = FracPluginOptions;
 function buildVirtualEntry(viewFilePath: string): string {
   const normalized = viewFilePath.replace(/\\/g, "/");
   return [
-    `import { mountView } from "frac/web";`,
+    `import { mountView } from "@usefractal/frac/web";`,
     `import Component from "${normalized}";`,
     `import { createElement } from "react";`,
     `mountView(createElement(Component));`,
@@ -74,7 +74,7 @@ function buildAtomRegistryEntry(atoms: DiscoveredAtom[]): string {
 function buildRenderAtomsEntry(): string {
   const renderAtomsViewPath = getInternalWebModulePath("render-atoms-view");
   return [
-    `import { mountView } from "frac/web";`,
+    `import { mountView } from "@usefractal/frac/web";`,
     `import { createElement } from "react";`,
     `import { RenderAtomsView } from "${renderAtomsViewPath}";`,
     `import { atomRegistry } from "${ATOMS_REGISTRY_ID}";`,
@@ -128,7 +128,7 @@ function resolveDefaultFractalsDir(projectRoot: string): string {
  * // vite.config.ts
  * import { defineConfig } from "vite";
  * import react from "@vitejs/plugin-react";
- * import { frac } from "frac/vite";
+ * import { frac } from "@usefractal/frac/vite";
  *
  * export default defineConfig({
  *   plugins: [react(), frac({ viewsDir: "src/views" })],
@@ -211,7 +211,7 @@ export function frac(options?: FracPluginOptions): Plugin {
             `${resolvedViewsDir}/*/index.{tsx,jsx}`,
           ],
           include: ["react", "react-dom/client", "react/jsx-runtime"],
-          exclude: ["frac/web"],
+          exclude: ["@usefractal/frac/web"],
         },
         experimental: {
           renderBuiltUrl: (filename) => {

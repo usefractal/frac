@@ -42,7 +42,7 @@ Export your server's type and use `generateHelpers`:
 
 ```typescript
 // src/server.ts
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 
 const server = new McpServer({ name: "my-app", version: "1.0" }, {})
@@ -84,7 +84,7 @@ export type AppType = typeof server;
 ```typescript
 // src/helpers.ts
 import type { AppType } from "./server";
-import { generateHelpers } from "frac/web";
+import { generateHelpers } from "@usefractal/frac/web";
 
 export const { useCallTool, useToolInfo } = generateHelpers<AppType>();
 ```
@@ -171,7 +171,7 @@ import type {
   ToolNames,
   ToolInput,
   ToolOutput,
-} from "frac/server";
+} from "@usefractal/frac/server";
 import type { AppType } from "./server";
 
 // Get all tool names as a union
@@ -235,11 +235,11 @@ type Input = {
 
 ### "Property does not exist on type"
 
-Make sure you're importing from your generated helpers file, not directly from `frac/web`:
+Make sure you're importing from your generated helpers file, not directly from `@usefractal/frac/web`:
 
 ```typescript
 // Wrong
-import { useCallTool } from "frac/web";
+import { useCallTool } from "@usefractal/frac/web";
 
 // Right
 import { useCallTool } from "../helpers";

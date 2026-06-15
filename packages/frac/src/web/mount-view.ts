@@ -19,7 +19,7 @@ let rootInstance: Root | null = null;
  * @example
  * ```tsx
  * // src/views/search.tsx
- * import { mountView } from "frac/web";
+ * import { mountView } from "@usefractal/frac/web";
  * import { App } from "./App";
  *
  * mountView(<App />);

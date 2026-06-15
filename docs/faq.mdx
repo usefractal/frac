@@ -9,11 +9,11 @@ description: "Common questions and troubleshooting for frac type safety, deploym
 
 ### "Property does not exist on type" when using typed hooks
 
-Make sure you're importing from your generated helpers file, not directly from `frac/web`:
+Make sure you're importing from your generated helpers file, not directly from `@usefractal/frac/web`:
 
 ```typescript
 // Wrong
-import { useCallTool } from "frac/web";
+import { useCallTool } from "@usefractal/frac/web";
 
 // Right
 import { useCallTool } from "../frac";

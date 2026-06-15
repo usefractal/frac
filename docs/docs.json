@@ -161,12 +161,12 @@
   "navbar": {
     "primary": {
       "type": "github",
-      "href": "https://github.com/fractal/frac"
+      "href": "https://github.com/fractal-mcp/frac"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/fractal/frac"
+      "github": "https://github.com/fractal-mcp/frac"
     }
   },
   "description": "A full stack TypeScript framework for building ChatGPT and MCP Apps",

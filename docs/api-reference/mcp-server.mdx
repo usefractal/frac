@@ -9,7 +9,7 @@ The main class for building MCP servers with frac.
 ## Import
 
 ```typescript
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 ```
 
 ## Constructor
@@ -44,7 +44,7 @@ type McpServerOptions = {
 The underlying [Express](https://expressjs.com/) app. Use this to register custom routes, middleware, or settings on the HTTP server backing your MCP server.
 
 ```typescript
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 
 const server = new McpServer({ name: "my-app", version: "1.0" });
 
@@ -251,7 +251,7 @@ export type AppType = typeof server;
 Middleware that requires a valid Bearer token on every request. Use this when every tool needs sign-in.
 
 ```typescript
-import { requireBearerAuth } from "frac/server";
+import { requireBearerAuth } from "@usefractal/frac/server";
 
 server.use(
   "/mcp",
@@ -266,7 +266,7 @@ server.use(
 Middleware that validates a Bearer token when present, and lets requests through unauthenticated when no `Authorization` header is sent. Pair with per-tool [`securitySchemes`](/api-reference/register-tool#securityschemes) for mixed-auth servers.
 
 ```typescript
-import { optionalBearerAuth } from "frac/server";
+import { optionalBearerAuth } from "@usefractal/frac/server";
 
 server.use(
   "/mcp",
@@ -324,7 +324,7 @@ Required fields on `AuthInfo`:
 | `extra` | `Record<string, unknown>` | Optional: anything else you want available in handlers (e.g. `sub`, `email`). |
 
 ```typescript
-import { type AuthInfo, InvalidTokenError } from "frac/server";
+import { type AuthInfo, InvalidTokenError } from "@usefractal/frac/server";
 
 async function verifyAccessToken(token: string): Promise<AuthInfo> {
   try {
@@ -352,7 +352,7 @@ Express router that serves the OAuth 2.0 [Protected Resource Metadata](https://d
 
 **Example:**
 ```typescript
-import { mcpAuthMetadataRouter } from "frac/server";
+import { mcpAuthMetadataRouter } from "@usefractal/frac/server";
 
 server.use(
   mcpAuthMetadataRouter({
@@ -373,7 +373,7 @@ Values above are illustrative. See [RFC 8414](https://datatracker.ietf.org/doc/h
 
 ## Exported Types
 
-The following middleware types are available from `frac/server`:
+The following middleware types are available from `@usefractal/frac/server`:
 
 ```typescript
 import type {
@@ -386,7 +386,7 @@ import type {
   McpTypedMiddlewareFn,
   McpMethodString,
   SecurityScheme,
-} from "frac/server";
+} from "@usefractal/frac/server";
 ```
 
 ## Related

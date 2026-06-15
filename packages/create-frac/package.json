@@ -1,12 +1,12 @@
 {
-  "name": "create-frac",
+  "name": "@usefractal/create-frac",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
   "author": "frac",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractal/frac.git"
+    "url": "https://github.com/fractal-mcp/frac.git"
   },
   "bin": {
     "create-frac": "index.js"

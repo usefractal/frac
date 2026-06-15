@@ -269,7 +269,7 @@ See [Data Flow: Response Fields](/concepts/data-flow#response-fields-explained).
 File `src/views/greeting.tsx` exports the React component. `view.component` matches its file name.
 
 ```typescript
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 
 const server = new McpServer({ name: "my-app", version: "0.0.1" }, {})
@@ -366,10 +366,10 @@ server.registerTool(
 
 ## Content helpers
 
-`frac/server` exports helpers for building `ContentBlock`s:
+`@usefractal/frac/server` exports helpers for building `ContentBlock`s:
 
 ```typescript
-import { audio, embeddedResource, image, resourceLink, text } from "frac/server";
+import { audio, embeddedResource, image, resourceLink, text } from "@usefractal/frac/server";
 
 return {
   content: [

@@ -9,7 +9,7 @@ icon: "house"
 
 <CodeGroup>
 ```ts src/server.ts
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 
 const server = new McpServer({ name: "my-app", version: "0.0.1" }, {})
@@ -76,23 +76,23 @@ Scaffold a new project in one command:
 
 <CodeGroup>
 ```bash npm
-npm create frac@latest my-app
+npm create @usefractal/frac@latest my-app
 ```
 ```bash pnpm
-pnpm create frac my-app
+pnpm create @usefractal/frac my-app
 ```
 ```bash yarn
-yarn create frac my-app
+yarn create @usefractal/frac my-app
 ```
 ```bash bun
-bun create frac my-app
+bun create @usefractal/frac my-app
 ```
 </CodeGroup>
 
 You can also install the frac Skill so your AI coding assistant has framework-specific guidance for bootstrapping, maintaining, and migrating projects:
 
 ```bash
-npx skills add fractal/frac -s frac
+npx skills add fractal-mcp/frac -s frac
 ```
 
 <CardGroup cols={3}>

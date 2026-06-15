@@ -69,7 +69,7 @@ These features are **only available in ChatGPT** and not supported in MCP Apps:
 Upload and download files with host-managed storage:
 
 ```tsx
-import { useFiles } from "frac/web";
+import { useFiles } from "@usefractal/frac/web";
 
 function View() {
   const { upload, getDownloadUrl } = useFiles();
@@ -89,7 +89,7 @@ function View() {
 Set a URL for the "Open in App" button that appears in fullscreen mode:
 
 ```tsx
-import { useSetOpenInAppUrl } from "frac/web";
+import { useSetOpenInAppUrl } from "@usefractal/frac/web";
 
 function View() {
   const { setOpenInAppUrl } = useSetOpenInAppUrl();

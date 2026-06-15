@@ -1,10 +1,10 @@
-import { Command, type Command as CommandLoadable, Help } from "@oclif/core";
+import { Args, Command, Flags } from "@oclif/core";
 import spawn from "cross-spawn";
 
 function passthrough(args: string[]): never {
   const { status, error } = spawn.sync(
     "npx",
-    ["--yes", "create-frac@latest", ...args],
+    ["--yes", "@usefractal/create-frac@latest", ...args],
     { stdio: "inherit" },
   );
   if (error) {
@@ -17,23 +17,40 @@ function passthrough(args: string[]): never {
 export default class Create extends Command {
   static override description = "Scaffold a new frac project";
   static override strict = false;
+  static override args = {
+    path: Args.string({
+      description: "Where the project will be created",
+      required: false,
+    }),
+  };
+  static override examples = [
+    "frac create",
+    "frac create my-app --yes",
+    "frac create my-app --demo",
+  ];
+  static override flags = {
+    demo: Flags.boolean({
+      description: "Scaffold the richer demo project",
+    }),
+    overwrite: Flags.boolean({
+      description: "Remove existing files if the target directory is not empty",
+    }),
+    pm: Flags.string({
+      description: "Package manager to use",
+      options: ["bun", "deno", "npm", "pnpm", "yarn"],
+    }),
+    "skip-skills": Flags.boolean({
+      description: "Skip installing coding agent skills",
+    }),
+    start: Flags.boolean({
+      description: "Start the dev server after scaffolding",
+    }),
+    yes: Flags.boolean({
+      description: "Skip prompts and use default values for unprovided options",
+    }),
+  };
 
   public async run(): Promise<void> {
     passthrough(this.argv);
-  }
-}
-
-// Registered as `oclif.helpClass` so that `frac create --help` forwards
-// to `create-frac --help` (single source of truth for the help text)
-// instead of rendering oclif's auto-generated help. All other commands fall
-// through to the default `Help` behaviour.
-export class FracHelp extends Help {
-  override async showCommandHelp(
-    command: CommandLoadable.Loadable,
-  ): Promise<void> {
-    if (command.id === "create") {
-      passthrough(["--help"]);
-    }
-    return super.showCommandHelp(command);
   }
 }

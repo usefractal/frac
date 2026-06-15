@@ -1,4 +1,4 @@
-import { useOpenExternal } from "frac/web";
+import { useOpenExternal } from "@usefractal/frac/web";
 import { BookOpen, CircleStar } from "lucide-react";
 import { Card, CardDescription, CardTitle } from "@/views/components/ui.js";
 

@@ -1,4 +1,4 @@
-import { useOpenExternal } from "frac/web";
+import { useOpenExternal } from "@usefractal/frac/web";
 import type { ReactNode } from "react";
 
 export default function DocLink({

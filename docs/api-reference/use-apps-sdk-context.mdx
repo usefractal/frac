@@ -14,7 +14,7 @@ For most use cases, prefer using the specialized hooks like `useLayout`, `useUse
 ## Basic usage
 
 ```tsx
-import { useAppsSdkContext } from "frac/web";
+import { useAppsSdkContext } from "@usefractal/frac/web";
 
 function ThemeDisplay() {
   const theme = useAppsSdkContext("theme");
@@ -62,7 +62,7 @@ The current value of the specified global, or `undefined` if not available.
 ### Reading Safe Area Insets
 
 ```tsx
-import { useAppsSdkContext } from "frac/web";
+import { useAppsSdkContext } from "@usefractal/frac/web";
 
 function SafeAreaAwareView() {
   const safeArea = useAppsSdkContext("safeArea");
@@ -89,7 +89,7 @@ function SafeAreaAwareView() {
 ### Respecting Max Height
 
 ```tsx
-import { useAppsSdkContext } from "frac/web";
+import { useAppsSdkContext } from "@usefractal/frac/web";
 
 function ScrollableContent() {
   const maxHeight = useAppsSdkContext("maxHeight");
@@ -110,7 +110,7 @@ function ScrollableContent() {
 ### Accessing Tool Input
 
 ```tsx
-import { useAppsSdkContext } from "frac/web";
+import { useAppsSdkContext } from "@usefractal/frac/web";
 
 function ToolInputDisplay() {
   const toolInput = useAppsSdkContext("toolInput");
@@ -127,7 +127,7 @@ function ToolInputDisplay() {
 ### Multiple Globals
 
 ```tsx
-import { useAppsSdkContext } from "frac/web";
+import { useAppsSdkContext } from "@usefractal/frac/web";
 
 function EnvironmentInfo() {
   const theme = useAppsSdkContext("theme");

@@ -144,11 +144,11 @@ describe("scanAndWriteViewsDts", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  it("writes a views.d.ts that augments frac/server with discovered view names", () => {
+  it("writes a views.d.ts that augments @usefractal/frac/server with discovered view names", () => {
     scanAndWriteViewsDts(root);
 
     const content = readFileSync(join(root, ".frac/views.d.ts"), "utf-8");
-    expect(content).toContain('declare module "frac/server"');
+    expect(content).toContain('declare module "@usefractal/frac/server"');
     expect(content).toContain('"hello": true;');
   });
 });

@@ -43,13 +43,15 @@ describe("data-llm plugin", () => {
     const result = await transform(code, "test.tsx");
 
     expect(result).not.toBeNull();
-    expect(result?.code).toContain('import { DataLLM } from "frac/web"');
+    expect(result?.code).toContain(
+      'import { DataLLM } from "@usefractal/frac/web"',
+    );
   });
 
   it("should handle DataLLM imports correctly", async () => {
     // No duplicate import
     const codeWithImport = `
-      import { DataLLM } from "frac/web";
+      import { DataLLM } from "@usefractal/frac/web";
       function Component() {
         return <div data-llm="Test">Content</div>;
       }
@@ -70,7 +72,9 @@ describe("data-llm plugin", () => {
     const result2 = await transform(codeWithOthers, "test.tsx");
     expect(result2?.code).toContain('import React from "react"');
     expect(result2?.code).toContain('import { useState } from "react"');
-    expect(result2?.code).toContain('import { DataLLM } from "frac/web"');
+    expect(result2?.code).toContain(
+      'import { DataLLM } from "@usefractal/frac/web"',
+    );
   });
 
   it("should handle complex JSX with multiple data-llm attributes", async () => {

@@ -1,11 +1,11 @@
 ---
-title: Use frac/server
-description: "Add view registration and TypeScript type inference to your existing MCP server with frac/server."
+title: Use @usefractal/frac/server
+description: "Add view registration and TypeScript type inference to your existing MCP server with @usefractal/frac/server."
 ---
 
-# Use frac/server
+# Use @usefractal/frac/server
 
-This guide shows you how to add `frac/server` to an existing MCP server to enable view support with full TypeScript type inference.
+This guide shows you how to add `@usefractal/frac/server` to an existing MCP server to enable view support with full TypeScript type inference.
 
 ## Prerequisites
 
@@ -28,12 +28,12 @@ Replace your `McpServer` import with frac's enhanced version:
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 // After
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 ```
 
 Keep your existing dependency to @modelcontextprotocol/sdk in your project, frac does not replaces it, but depends on it.
 
-Your existing tools, resources, and prompts will continue to work as before. With `frac/server`, `registerTool` provides an optional `view` field so you can bind a tool to a React view in a single call.
+Your existing tools, resources, and prompts will continue to work as before. With `@usefractal/frac/server`, `registerTool` provides an optional `view` field so you can bind a tool to a React view in a single call.
 
 ## Project structure
 
@@ -66,7 +66,7 @@ pnpm add -D vite typescript @types/react @types/react-dom
 ```typescript
 // vite.config.ts
 import { defineConfig } from "vite";
-import { frac } from "frac/vite";
+import { frac } from "@usefractal/frac/vite";
 
 export default defineConfig({
   plugins: [frac()],
@@ -101,7 +101,7 @@ export default function MyView() {
 In your server code, register the view with `registerTool` and `view`:
 
 ```typescript
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 
 const server = new McpServer({ name: "my-app", version: "1.0" }, {})
@@ -123,7 +123,7 @@ const server = new McpServer({ name: "my-app", version: "1.0" }, {})
 Update your server startup to serve the MCP endpoint. If you're using Express:
 
 ```typescript
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 import express from "express";
 

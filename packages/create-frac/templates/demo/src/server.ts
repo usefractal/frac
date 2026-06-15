@@ -1,4 +1,4 @@
-import { McpServer } from "frac/server";
+import { McpServer } from "@usefractal/frac/server";
 import { z } from "zod";
 
 const server = new McpServer(

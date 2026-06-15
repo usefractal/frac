@@ -26,7 +26,7 @@ What kind of state do you need?
 Persistent state that survives re-renders and display mode changes. Unlike React's `useState`, this state is stored by the host and restored when your view remounts.
 
 ```tsx
-import { useViewState } from "frac/web";
+import { useViewState } from "@usefractal/frac/web";
 
 function CounterView() {
   const [state, setState] = useViewState({ count: 0 });
@@ -88,7 +88,7 @@ const toggleItem = (id: string) => {
 A Zustand store that automatically syncs with the host's persistent state. Unlike `useViewState`, this provides actions, computed values, and middleware support for complex state management.
 
 ```tsx
-import { createStore } from "frac/web";
+import { createStore } from "@usefractal/frac/web";
 
 type CartItem = { id: string; name: string; price: number; quantity: number };
 

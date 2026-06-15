@@ -1,6 +1,6 @@
 import type { PluginObj, TransformOptions, types } from "@babel/core";
 
-const LLM_IMPORT_SOURCE = "frac/web";
+const LLM_IMPORT_SOURCE = "@usefractal/frac/web";
 
 interface State {
   hasDataLLMImport?: boolean;
