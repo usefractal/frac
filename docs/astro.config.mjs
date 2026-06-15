@@ -25,7 +25,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/fractal-mcp/frac",
+          href: "https://github.com/usefractal/frac",
         },
         {
           icon: "discord",
@@ -34,7 +34,7 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl: "https://github.com/fractal-mcp/frac/edit/main/docs/src/content/docs/",
+        baseUrl: "https://github.com/usefractal/frac/edit/main/docs/src/content/docs/",
       },
       sidebar: [
         {

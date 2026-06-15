@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://docs.usefractal.dev">
-    <img alt="frac, the full-stack React framework for MCP apps and MCP servers" src="https://raw.githubusercontent.com/fractal-mcp/frac/main/docs/images/github-banner.png" width="100%" />
+    <img alt="frac, the full-stack React framework for MCP apps and MCP servers" src="https://raw.githubusercontent.com/usefractal/frac/main/docs/images/github-banner.png" width="100%" />
   </a>
 </p>
 
@@ -20,7 +20,7 @@
   <a href="https://www.npmjs.com/package/@usefractal/frac"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/v/%40usefractal%2Ffrac?color=77F5EE&amp;labelColor=161B22&amp;style=for-the-badge"><img alt="npm version" src="https://img.shields.io/npm/v/%40usefractal%2Ffrac?color=E3FAF7&amp;labelColor=F6F8FA&amp;style=for-the-badge"></picture></a>
   <a href="https://www.npmjs.com/package/@usefractal/frac"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/dm/%40usefractal%2Ffrac?color=D7FFC8&amp;labelColor=161B22&amp;style=for-the-badge"><img alt="npm downloads" src="https://img.shields.io/npm/dm/%40usefractal%2Ffrac?color=E8FBD9&amp;labelColor=F6F8FA&amp;style=for-the-badge"></picture></a>
   <a href="https://discord.com/invite/WaxJuH4d"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Discord-community-77F5EE?style=for-the-badge&amp;logo=discord&amp;logoColor=77F5EE&amp;labelColor=161B22"><img alt="Discord community" src="https://img.shields.io/badge/Discord-community-E3FAF7?style=for-the-badge&amp;logo=discord&amp;logoColor=5865F2&amp;labelColor=F6F8FA"></picture></a>
-  <a href="https://github.com/fractal-mcp/frac/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/github/license/fractal-mcp/frac?color=D7FFC8&amp;labelColor=161B22&amp;style=for-the-badge"><img alt="License: MIT" src="https://img.shields.io/github/license/fractal-mcp/frac?color=E8FBD9&amp;labelColor=F6F8FA&amp;style=for-the-badge"></picture></a>
+  <a href="https://github.com/usefractal/frac/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/github/license/usefractal/frac?color=D7FFC8&amp;labelColor=161B22&amp;style=for-the-badge"><img alt="License: MIT" src="https://img.shields.io/github/license/usefractal/frac?color=E8FBD9&amp;labelColor=F6F8FA&amp;style=for-the-badge"></picture></a>
 </p>
 
 ## About frac
@@ -47,7 +47,7 @@ Features include:
 
 Install our skill for building MCP apps and ChatGPT apps:
 ```bash
-npx skills add fractal-mcp/frac -s frac
+npx skills add usefractal/frac -s frac
 ```
 Once installed, ask your agent "What skills do you have?" to confirm, then try:
 
@@ -82,11 +82,11 @@ See our [deployment guide](https://docs.usefractal.dev/quickstart/deploy) for th
 
 We'd love your help improving frac. Here are a few ways to get involved:
 
-- **Bugs**: If you run into a bug or unexpected behavior, open a [GitHub Issue](https://github.com/fractal-mcp/frac/issues) with a clear reproduction.
-- **Questions and ideas**: Need help building with frac or have ideas to improve the framework, docs, examples, or developer experience? [Open an issue](https://github.com/fractal-mcp/frac/issues) or share them on our [Discord](https://discord.com/invite/WaxJuH4d).
+- **Bugs**: If you run into a bug or unexpected behavior, open a [GitHub Issue](https://github.com/usefractal/frac/issues) with a clear reproduction.
+- **Questions and ideas**: Need help building with frac or have ideas to improve the framework, docs, examples, or developer experience? [Open an issue](https://github.com/usefractal/frac/issues) or share them on our [Discord](https://discord.com/invite/WaxJuH4d).
 - **Pull requests**: For code or documentation changes, open a focused PR with a clear description and relevant tests or docs updates.
 
-frac is released under the [MIT License](https://github.com/fractal-mcp/frac/blob/main/LICENSE).
+frac is released under the [MIT License](https://github.com/usefractal/frac/blob/main/LICENSE).
 
 ### Acknowledgements
 

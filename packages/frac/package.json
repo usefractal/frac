@@ -4,7 +4,7 @@
   "description": "frac is a framework for building MCP Apps",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractal-mcp/frac.git"
+    "url": "https://github.com/usefractal/frac.git"
   },
   "type": "module",
   "engines": {

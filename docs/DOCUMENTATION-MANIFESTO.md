@@ -22,7 +22,7 @@ Most documentation visitors do not know frac yet, and many do not know MCP Apps 
 
 If discovery and evaluation fail, readers never reach implementation.
 
-Never assume the reader is already an expert in frac or MCP Apps. When you mention non-trivial concepts, link back to the relevant Guides or Concepts pages. If a needed Guide or Concept page does not exist yet, open an issue at [fractal-mcp/frac](https://github.com/fractal-mcp/frac/issues/new/choose) or add the missing page in your PR.
+Never assume the reader is already an expert in frac or MCP Apps. When you mention non-trivial concepts, link back to the relevant Guides or Concepts pages. If a needed Guide or Concept page does not exist yet, open an issue at [usefractal/frac](https://github.com/usefractal/frac/issues/new/choose) or add the missing page in your PR.
 
 ### Always keep the documentation structure and user paths in mind
 
@@ -116,7 +116,7 @@ Use this checklist when your PR changes product behavior, APIs, examples, termin
   - Concepts or Guides
   - FAQ
 - [ ] If the answer is yes, update those pages in the same PR.
-- [ ] If the documentation work cannot be done in the same PR, open a follow-up issue at [fractal-mcp/frac issues](https://github.com/fractal-mcp/frac/issues/new/choose) and link it from the PR description.
+- [ ] If the documentation work cannot be done in the same PR, open a follow-up issue at [usefractal/frac issues](https://github.com/usefractal/frac/issues/new/choose) and link it from the PR description.
 - [ ] If the change introduces a new repeated pattern, mental model, or tradeoff, decide whether it needs a new Guide or Concept page.
 - [ ] If a page would be easier to understand with a screenshot, diagram, or Starlight component, add it.
 - [ ] If you changed paths, filenames, or navigation, verify that the information architecture still makes sense and run `pnpm build`.

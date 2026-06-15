@@ -6,7 +6,7 @@
   "author": "frac",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractal-mcp/frac.git"
+    "url": "https://github.com/usefractal/frac.git"
   },
   "bin": {
     "create-frac": "index.js"

@@ -243,7 +243,7 @@ export async function init(args: string[] = process.argv.slice(2)) {
       "--yes",
       "skills",
       "add",
-      "fractal-mcp/frac",
+      "usefractal/frac",
       "--skill",
       "frac-app-builder",
       "--agent",
@@ -258,7 +258,7 @@ export async function init(args: string[] = process.argv.slice(2)) {
     } else {
       Spinner.error(`Failed to install coding agent skills:
 \x1b[2m${output}\x1b[0m`);
-      prompts.log.error("Try manually: `npx skills add fractal-mcp/frac`.");
+      prompts.log.error("Try manually: `npx skills add usefractal/frac`.");
     }
   }
 
