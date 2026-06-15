@@ -25,7 +25,7 @@ const version = pkg.version;
 
 const HELP_MESSAGE = `Usage: frac create [path] [options]
 
-⛰ Frac v${version} - the fullstack framework for building MCP Apps
+⛰ frac v${version} - the fullstack framework for building MCP Apps
 
 Arguments:
   path           Where the project will be created. Prompted when omitted.
@@ -109,7 +109,7 @@ export async function init(args: string[] = process.argv.slice(2)) {
 
   console.log(); // cosmetic line break
   prompts.intro(
-    `\x1b[1;36m⛰  Welcome to Frac v${version} \x1b[22m- the fullstack framework for building MCP Apps\x1b[0m`,
+    `\x1b[1;36m⛰  Welcome to frac v${version} \x1b[22m- the fullstack framework for building MCP Apps\x1b[0m`,
   );
 
   // 1. Target directory

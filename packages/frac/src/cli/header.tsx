@@ -10,7 +10,7 @@ export const Header = ({
   return (
     <Box marginBottom={1}>
       <Text color="cyan" bold>
-        ⛰{"  "}Frac
+        ⛰{"  "}frac
       </Text>
       <Text color="cyan"> v{version}</Text>
       {children}

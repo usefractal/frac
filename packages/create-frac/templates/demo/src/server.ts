@@ -11,18 +11,18 @@ const server = new McpServer(
   .registerTool(
     {
       name: "start",
-      description: "Onboard Frac",
+      description: "Onboard frac",
       inputSchema: {
         name: z.string().optional().describe("The user name."),
       },
       annotations: {
-        title: "Start Frac onboarding",
+        title: "Start frac onboarding",
         readOnlyHint: true,
         destructiveHint: false,
         openWorldHint: false,
       },
       _meta: {
-        "openai/toolInvocation/invoking": "Starting the Frac onboarding…",
+        "openai/toolInvocation/invoking": "Starting the frac onboarding…",
         "openai/toolInvocation/invoked": "Onboarding ready.",
       },
       view: {

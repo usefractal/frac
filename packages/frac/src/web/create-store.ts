@@ -18,7 +18,7 @@ import type { UnknownObject } from "./types.js";
  * Use this when you outgrow {@link useViewState} and want first-class Zustand
  * ergonomics (selectors, actions, middleware). Otherwise prefer `useViewState`.
  *
- * Frac-internal context fields (see {@link DataLLM}) are filtered out
+ * frac-internal context fields (see {@link DataLLM}) are filtered out
  * automatically before reaching your store.
  *
  * @typeParam State - Shape of the store's state. Must be a plain object.

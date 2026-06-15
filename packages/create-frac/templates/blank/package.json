@@ -2,7 +2,7 @@
   "name": "frac-blank",
   "version": "0.0.1",
   "private": true,
-  "description": "Blank Frac MCP App template",
+  "description": "Blank frac MCP App template",
   "type": "module",
   "scripts": {
     "dev": "frac dev",

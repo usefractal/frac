@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Dockerfile for a Frac MCP server.
+# Dockerfile for a frac MCP server.
 #
 # Detects npm, yarn, or pnpm from the lockfile in your project.
 # (For bun or deno, adapt the install/build/prune commands below.)

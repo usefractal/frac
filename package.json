@@ -1,7 +1,7 @@
 {
   "name": "@frac/monorepo",
   "version": "0.0.0",
-  "description": "Frac is a framework for building ChatGPT and MCP Apps",
+  "description": "frac is a framework for building ChatGPT and MCP Apps",
   "type": "module",
   "scripts": {
     "build": "pnpm --filter frac build && pnpm --filter create-frac build",

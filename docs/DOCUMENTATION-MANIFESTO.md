@@ -1,40 +1,40 @@
-# Frac Documentation Manifesto
+# frac Documentation Manifesto
 
-Frac aims at providing the best developer experience to MCP Apps and ChatGPT Apps builders. We believe **great documentation** is as important as a great framework.
+frac aims at providing the best developer experience to MCP Apps and ChatGPT Apps builders. We believe **great documentation** is as important as a great framework.
 
-This manifesto is written for **all** Frac contributors, whether you're opening your first pull request or you're part of the core maintainers.
+This manifesto is written for **all** frac contributors, whether you're opening your first pull request or you're part of the core maintainers.
 
 ## General concepts
 
 You are writing documentation for **humans and AI agents**. This means:
 
 - **Be clear and concise, but not too concise.** Keep it simple, but still warm, readable, and enjoyable for humans.
-- **Use illustrations and Mintlify components.** People spend more time in documentation that is visually clear and pleasant to read. Use callouts, cards, code examples, and well-designed sections. For diagrams, prefer Mermaid so they can be read by both humans and agents. Use Frac colors and styling inside Mermaid diagrams when appropriate.
+- **Use illustrations and Mintlify components.** People spend more time in documentation that is visually clear and pleasant to read. Use callouts, cards, code examples, and well-designed sections. For diagrams, prefer Mermaid so they can be read by both humans and agents. Use frac colors and styling inside Mermaid diagrams when appropriate.
 - **Think about the documentation globally, not just page by page.** Structure matters as much as content. The same information may need to appear in multiple user paths such as Get Started, Guides, and API Reference. Always consider whether a change belongs in more than one place.
 
 ### Understand your reader
 
-Most documentation visitors do not know Frac yet, and many do not know MCP Apps either. That means the goals of the documentation are, in order:
+Most documentation visitors do not know frac yet, and many do not know MCP Apps either. That means the goals of the documentation are, in order:
 
-1. **Discovery and education:** help readers understand MCP Apps, ChatGPT Apps, and where Frac fits.
-2. **Evaluation:** explain why Frac is a strong choice compared with lower-level or less integrated options.
+1. **Discovery and education:** help readers understand MCP Apps, ChatGPT Apps, and where frac fits.
+2. **Evaluation:** explain why frac is a strong choice compared with lower-level or less integrated options.
 3. **Implementation:** explain how to build with it.
 
 If discovery and evaluation fail, readers never reach implementation.
 
-Never assume the reader is already an expert in Frac or MCP Apps. When you mention non-trivial concepts, link back to the relevant Guides or Concepts pages. If a needed Guide or Concept page does not exist yet, open an issue at [fractal/frac](https://github.com/fractal/frac/issues/new/choose) or add the missing page in your PR.
+Never assume the reader is already an expert in frac or MCP Apps. When you mention non-trivial concepts, link back to the relevant Guides or Concepts pages. If a needed Guide or Concept page does not exist yet, open an issue at [fractal/frac](https://github.com/fractal/frac/issues/new/choose) or add the missing page in your PR.
 
 ### Always keep the documentation structure and user paths in mind
 
 #### Current documentation structure
 
 1. <details>
-   <summary><strong>Get Started</strong>: the <strong>home and most important section of our documentation</strong>. It should explain the value of Frac and help readers get to a first working app in less than 5 minutes.</summary>
+   <summary><strong>Get Started</strong>: the <strong>home and most important section of our documentation</strong>. It should explain the value of frac and help readers get to a first working app in less than 5 minutes.</summary>
 
-   - **Introduction**: why Frac was built, what it does, and what it does not do.
-   - **Fundamentals**: what MCP Apps and ChatGPT Apps are, how they differ from traditional web apps, and how they build on MCP servers. This section should also explain how Frac maps to the OpenAI Apps SDK and MCP runtimes.
-   - **Quickstart**: how to get started with Frac in under 5 minutes with our create command or the Frac Skill.
-   - **Migrate**: how to migrate your app with the Frac Skill.
+   - **Introduction**: why frac was built, what it does, and what it does not do.
+   - **Fundamentals**: what MCP Apps and ChatGPT Apps are, how they differ from traditional web apps, and how they build on MCP servers. This section should also explain how frac maps to the OpenAI Apps SDK and MCP runtimes.
+   - **Quickstart**: how to get started with frac in under 5 minutes with our create command or the frac Skill.
+   - **Migrate**: how to migrate your app with the frac Skill.
    - **Test your app**: how to test your app locally with MCP tooling or inside your target MCP client such as ChatGPT, Claude, or Cursor.
    - **Build for production**: how to build your MCP server and UI code for production use.
    - **Deploy**: how to deploy your app and publish it to MCP client stores.
@@ -42,13 +42,13 @@ Never assume the reader is already an expert in Frac or MCP Apps. When you menti
    </details>
 
 2. <details>
-   <summary><strong>Core concepts</strong>: explains the core concepts introduced by Frac and MCP Apps. This section should give readers the mental models they need to understand how Frac works.</summary>
+   <summary><strong>Core concepts</strong>: explains the core concepts introduced by frac and MCP Apps. This section should give readers the mental models they need to understand how frac works.</summary>
 
-   - **Write Once, Run Everywhere**: how a single codebase targets both ChatGPT Apps and MCP clients such as Claude or Cursor, and how Frac abstracts client differences.
+   - **Write Once, Run Everywhere**: how a single codebase targets both ChatGPT Apps and MCP clients such as Claude or Cursor, and how frac abstracts client differences.
    - **Data Flow**: how data moves between the host, your app, and the LLM, and where state lives.
-   - **LLM Context Sync**: how Frac keeps the model's context in sync with your app state, and when that sync runs.
+   - **LLM Context Sync**: how frac keeps the model's context in sync with your app state, and when that sync runs.
    - **Fast Iteration**: the local development workflow, hot reload, and how to use MCP testing tools to iterate without redeploying.
-   - **Type Safety**: how Frac preserves types from your app to the client, including tools, parameters, and views, and how to get the most from TypeScript.
+   - **Type Safety**: how frac preserves types from your app to the client, including tools, parameters, and views, and how to get the most from TypeScript.
    
    </details>
 
@@ -65,15 +65,15 @@ Never assume the reader is already an expert in Frac or MCP Apps. When you menti
 4. <details>
    <summary><strong>Resources</strong>: supporting material such as FAQs, troubleshooting information, and policy or operational pages.</summary>
 
-   - **FAQ**: common questions and troubleshooting tips from Frac users. This section should be updated whenever the same issue appears repeatedly in GitHub issues, discussions, or support channels.
+   - **FAQ**: common questions and troubleshooting tips from frac users. This section should be updated whenever the same issue appears repeatedly in GitHub issues, discussions, or support channels.
    
    </details>
 
 5. <details>
-   <summary><strong>API Reference</strong>: full Frac API reference. This section should optimize for precision, completeness, and consistency over narrative explanation.</summary>
+   <summary><strong>API Reference</strong>: full frac API reference. This section should optimize for precision, completeness, and consistency over narrative explanation.</summary>
 
    - **Overview**: the entry point and how the API is organized, including server vs. web and hooks vs. utilities.
-   - **CLI**: Frac CLI commands such as create, build, and dev, plus their options.
+   - **CLI**: frac CLI commands such as create, build, and dev, plus their options.
    - **Server**: server-side APIs for defining the MCP server and registering UI.
      - **McpServer**: the server class, tools, resources, and type export.
      - **registerTool**: registers a tool — optionally with a `view` config that binds the tool to a React view.
@@ -94,12 +94,12 @@ Never assume the reader is already an expert in Frac or MCP Apps. When you menti
    
    </details>
 
-6. **Examples**: focused examples for Frac-specific concepts. Keep this section small until a real example has been ported and maintained for Frac.
+6. **Examples**: focused examples for frac-specific concepts. Keep this section small until a real example has been ported and maintained for frac.
 
 #### User paths, in order of importance
 
-1. A new user who wants to understand what Frac is: Get Started, then Core concepts.
-2. A new user who wants to try Frac quickly: Quickstart.
+1. A new user who wants to understand what frac is: Get Started, then Core concepts.
+2. A new user who wants to try frac quickly: Quickstart.
 3. A user who is actively building: Guides, Core concepts, and API Reference.
 4. A returning user who needs exact implementation details: API Reference and the relevant Guide or Concept page.
 
@@ -124,9 +124,9 @@ Use this checklist when your PR changes product behavior, APIs, examples, termin
 
 ## Detailed guidelines (especially useful for LLMs)
 
-### Style and tone (Frac voice)
+### Style and tone (frac voice)
 
-- **Person:** Use **you/your** for the reader in instructions and explanations. Use **we/our** when speaking as the team or about the product, for example "We built Frac", "our starter template", or "we collect".
+- **Person:** Use **you/your** for the reader in instructions and explanations. Use **we/our** when speaking as the team or about the product, for example "We built frac", "our starter template", or "we collect".
 - **Tone:** Confident and approachable. Use short, direct sentences; contractions are fine, such as "you'll", "it's", and "don't". A little warmth is fine, but avoid slang and colloquialisms.
 - **Clarity first:** Use simple language. Avoid jargon and clever phrasing. Readers are here to get something done, so be concise and skimmable.
 - **Active voice:** Prefer "Create a config file" over "A config file should be created."
@@ -149,7 +149,7 @@ Use this checklist when your PR changes product behavior, APIs, examples, termin
 
 ### Terminology and consistency
 
-- **Product and types:** Capitalize "App" when referring to the type, for example ChatGPT App, MCP App, or AI App. Use "your app" in body text. Use consistent product names: Frac, Skill, MCP, and Fractals.
+- **Product and types:** Capitalize "App" when referring to the type, for example ChatGPT App, MCP App, or AI App. Use "your app" in body text. Use consistent product names: frac, Skill, MCP, and Fractals.
 - **User-centric language:** Orient sentences around what the reader is doing or needs. Use internal or team jargon only when it is part of the product vocabulary.
 
 ### What to avoid

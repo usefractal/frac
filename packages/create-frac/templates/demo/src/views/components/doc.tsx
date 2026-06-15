@@ -7,7 +7,7 @@ export default function Doc({ children }: { children: ReactNode }) {
         viewBox="0 0 90 90"
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label="Frac"
+        aria-label="frac"
         className="size-4 shrink-0 mt-0.5"
       >
         <path

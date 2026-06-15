@@ -1,8 +1,8 @@
-# Frac - the MCP Apps framework
+# frac - the MCP Apps framework
 
 <p align="center">
   <a href="https://docs.usefractal.dev">
-    <img alt="Frac, the full-stack React framework for MCP apps and MCP servers" src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/github-banner.png" width="100%" />
+    <img alt="frac, the full-stack React framework for MCP apps and MCP servers" src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/github-banner.png" width="100%" />
   </a>
 </p>
 
@@ -23,25 +23,25 @@
   <a href="https://github.com/fractal/frac/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/github/license/fractal/frac?color=D7FFC8&amp;labelColor=161B22&amp;style=for-the-badge"><img alt="License: MIT" src="https://img.shields.io/github/license/fractal/frac?color=E8FBD9&amp;labelColor=F6F8FA&amp;style=for-the-badge"></picture></a>
 </p>
 
-## About Frac
+## About frac
 
-Frac helps developers build type-safe MCP apps for Claude, ChatGPT and other UI-enabled MCP clients, with a complete set of tooling designed for both humans and agents.
+frac helps developers build type-safe MCP apps for Claude, ChatGPT and other UI-enabled MCP clients, with a complete set of tooling designed for both humans and agents.
 
 Why? MCP apps extend the [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro) with **rich, interactive UI views** rendered from MCP servers. Conversational apps need seamless interaction between the user, the UI, and the model. This means new UX patterns, developer tooling, and abstractions. 
 Plus, the raw SDKs are low-level: no hooks, type safety, HMR, etc.
 
-That's why we built *Frac*.
+That's why we built *frac*.
 
 Features include:
 
-- **Delightful dev environment**: Frac provides a dev server, hot module reload, and a straightforward local MCP testing loop.
+- **Delightful dev environment**: frac provides a dev server, hot module reload, and a straightforward local MCP testing loop.
 - **Write once, run everywhere**: the framework abstracts implementation differences between MCP clients, so your app runs seamlessly in Claude, ChatGPT, VSCode, and any other MCP apps compatible client.
 - **Agent-ready**: skills, CLI, and clear framework conventions so your coding agent can build MCP apps end-to-end.
 - **Type-safe end-to-end**: tRPC-style inference from MCP server tool definition to React view for type safety from server to frontend.
 - **React-first**: Intuitive React Query-style hooks, with advanced state management. 
 - **Fractals**: register reusable component primitives and let the model compose them into typed UIs.
 
-They chose to build their MCP apps with Frac: 
+They chose to build their MCP apps with frac:
 
 <p align="center">
   <a href="https://www.datadoghq.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/datadog-dark.svg"><img src="https://raw.githubusercontent.com/fractal/frac/main/docs/images/user-logos/datadog-light.svg" alt="Datadog" height="24"></picture></a>
@@ -66,7 +66,7 @@ npx skills add fractal/frac -s frac
 Once installed, ask your agent "What skills do you have?" to confirm, then try:
 
 - _Create a new MCP app_
-- _Migrate my MCP server to the Frac framework_
+- _Migrate my MCP server to the frac framework_
 - _Add a new view to my MCP app_ 
 
 **For humans**
@@ -79,41 +79,43 @@ For full install instructions, read our [**Quickstart guide**](https://docs.usef
 
 ## Documentation
 
-The [Frac documentation](https://docs.usefractal.dev) covers the full lifecycle of building MCP Apps:
+The [frac documentation](https://docs.usefractal.dev) covers the full lifecycle of building MCP Apps:
 
-- [Fundamentals](https://docs.usefractal.dev/fundamentals): understand MCP Apps, ChatGPT Apps, and how Frac bridges both runtimes.
+- [Fundamentals](https://docs.usefractal.dev/fundamentals): understand MCP Apps, ChatGPT Apps, and how frac bridges both runtimes.
 - [Core concepts](https://docs.usefractal.dev/concepts): learn about server <> model <> UI data flows, LLM context sync, type safety, and fast local iteration.
 - [Guides](https://docs.usefractal.dev/guides/fetching-data): build real app behavior with tools, views, state, and model communication.
 - [API Reference](https://docs.usefractal.dev/api-reference): browse our MCP server APIs, React hooks, CLI commands, and runtime compatibility.
 
 ## Deploy
 
-Deploy Frac apps on any platform that can host an HTTP MCP server and static view assets.
+Deploy frac apps on any platform that can host an HTTP MCP server and static view assets.
 
 See our [deployment guide](https://docs.usefractal.dev/quickstart/deploy) for the full production path.
 
 ## Community & Contributing
 
-We'd love your help improving Frac. Here are a few ways to get involved:
+We'd love your help improving frac. Here are a few ways to get involved:
 
 - **Bugs**: If you run into a bug or unexpected behavior, open a [GitHub Issue](https://github.com/fractal/frac/issues) with a clear reproduction.
-- **Questions and ideas**: Need help building with Frac or have ideas to improve the framework, docs, examples, or developer experience? [Open an issue](https://github.com/fractal/frac/issues) or share them on our [Discord](https://discord.com/invite/gNAazGueab).
-- **Pull requests**: For code or documentation changes, read the [Contributing Guide](https://github.com/fractal/frac/blob/main/CONTRIBUTING.md) before opening a PR.
+- **Questions and ideas**: Need help building with frac or have ideas to improve the framework, docs, examples, or developer experience? [Open an issue](https://github.com/fractal/frac/issues) or share them on our [Discord](https://discord.com/invite/gNAazGueab).
+- **Pull requests**: For code or documentation changes, open a focused PR with a clear description and relevant tests or docs updates.
 
-Frac is released under the [MIT License](https://github.com/fractal/frac/blob/main/LICENSE).
+frac is released under the [MIT License](https://github.com/fractal/frac/blob/main/LICENSE).
 
 ### Acknowledgements
 
-Frac builds on the work of [Skybridge](https://github.com/alpic-ai/skybridge) and the [Alpic](https://alpic.ai) team. We have used Skybridge in production, and among the MCP Apps frameworks we could have forked, Skybridge provided the strongest foundation for the direction we want to take Frac.
+frac builds on the excellent work of [Skybridge](https://github.com/alpic-ai/skybridge) and the [Alpic](https://alpic.ai) team. They created one of the strongest foundations for building ChatGPT and MCP Apps, and their work made this project possible.
 
-This project is not an attempt to erase that work. It is a focused fork that keeps the core SDK ideas we rely on while reshaping the package, docs, scaffolding, and Fractals workflow around our own needs.
+We have used Skybridge in production and deeply appreciate the design decisions, engineering effort, and open-source release that gave frac its starting point. frac continues from that foundation while evolving the package, docs, scaffolding, and local development workflow for our own goals.
+
+This fork is based on Skybridge commit [`6a7a272a36da19de62d86fda5fe7b58f38c32c2a`](https://github.com/alpic-ai/skybridge/commit/6a7a272a36da19de62d86fda5fe7b58f38c32c2a).
 
 See [NOTICE.md](./NOTICE.md) for provenance and licensing notes.
 
 <a href="https://github.com/fractal/frac/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=fractal/frac" alt="Frac contributors">
+  <img src="https://contrib.rocks/image?repo=fractal/frac" alt="frac contributors">
 </a>
 
 ## Example
 
-Read the [Fractals example](https://docs.usefractal.dev/examples/fractals) to see how Frac registers reusable React component primitives and renders model-composed UIs from typed prop contracts.
+Read the [Fractals example](https://docs.usefractal.dev/examples/fractals) to see how frac registers reusable React component primitives and renders model-composed UIs from typed prop contracts.

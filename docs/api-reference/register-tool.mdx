@@ -177,7 +177,7 @@ type ToolHandler = (
 }>;
 ```
 
-`content` can be a plain string, a single `ContentBlock`, or an array of `ContentBlock`s. See the different [content helpers](#content-helpers) that Frac provides.
+`content` can be a plain string, a single `ContentBlock`, or an array of `ContentBlock`s. See the different [content helpers](#content-helpers) that frac provides.
 
 The `extra` parameter exposes:
 - `extra.authInfo` — populated by auth middleware (e.g. `authInfo.clientId`, `authInfo.extra.email`)
@@ -187,7 +187,7 @@ The `extra` parameter exposes:
 
 ### Client hints on `_meta`
 
-ChatGPT may inject context about the current conversation in tool calls. Frac types these fields on `extra._meta` so you can use them in the handler:
+ChatGPT may inject context about the current conversation in tool calls. frac types these fields on `extra._meta` so you can use them in the handler:
 
 ```typescript
 type ClientHintsMeta = {
@@ -259,7 +259,7 @@ Three fields, three audiences:
 See [Data Flow: Response Fields](/concepts/data-flow#response-fields-explained).
 
 <Info>
-**viewUUID**: Frac automatically injects a unique `viewUUID` into `_meta` for every tool with view call. This enables `useViewState` and `createStore` to persist state across re-renders in MCP Apps via `localStorage`. Any `_meta` you return is preserved alongside the injected `viewUUID`.
+**viewUUID**: frac automatically injects a unique `viewUUID` into `_meta` for every tool with view call. This enables `useViewState` and `createStore` to persist state across re-renders in MCP Apps via `localStorage`. Any `_meta` you return is preserved alongside the injected `viewUUID`.
 </Info>
 
 ## Examples
@@ -431,7 +431,7 @@ Views run in a sandboxed iframe with strict Content Security Policy. If your vie
 - **Redirect to external sites** → add to `redirectDomains`
 
 <Note>
-Frac automatically includes your server's domain in the CSP. You only need to configure additional external domains.
+frac automatically includes your server's domain in the CSP. You only need to configure additional external domains.
 </Note>
 
 ### Configuration

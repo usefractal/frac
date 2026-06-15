@@ -1,6 +1,6 @@
 # Start From Template
 
-Scaffold a project by setting up the Frac template starter. Frac is a TypeScript SDK for building MCP servers with type-safe APIs and React views.
+Scaffold a project by setting up the frac template starter. frac is a TypeScript SDK for building MCP servers with type-safe APIs and React views.
 
 ## Workflow
 

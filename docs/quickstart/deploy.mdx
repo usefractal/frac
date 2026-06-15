@@ -5,13 +5,13 @@ icon: "cloud-arrow-up"
 sidebar_position: 4
 ---
 
-You can deploy your Frac App as a Node.js server on any compatible infrastructure provider, or to Cloudflare Workers via the `nodejs_compat` runtime.
+You can deploy your frac App as a Node.js server on any compatible infrastructure provider, or to Cloudflare Workers via the `nodejs_compat` runtime.
 
-Below are two common deployment targets. Frac does not require a specific hosting provider; any platform that can run the server and expose `/mcp` over HTTPS can host your app.
+Below are two common deployment targets. frac does not require a specific hosting provider; any platform that can run the server and expose `/mcp` over HTTPS can host your app.
 
 ## Cloudflare Workers
 
-Frac runs on Cloudflare Workers via [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) and the `nodejs_compat` runtime. Static assets (your built views) are served by Cloudflare's edge directly; the worker handles `/mcp` traffic and any other dynamic routes.
+frac runs on Cloudflare Workers via [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) and the `nodejs_compat` runtime. Static assets (your built views) are served by Cloudflare's edge directly; the worker handles `/mcp` traffic and any other dynamic routes.
 
 ### Configure
 
@@ -32,9 +32,9 @@ Add a `wrangler.jsonc` at your project root:
 
 Each setting is load-bearing:
 
-- **`compatibility_date >= 2025-09-01`** + **`nodejs_compat`** — enables `cloudflare:node`'s `httpServerHandler`, which Frac uses to bridge the Express app to the Workers fetch event.
+- **`compatibility_date >= 2025-09-01`** + **`nodejs_compat`** — enables `cloudflare:node`'s `httpServerHandler`, which frac uses to bridge the Express app to the Workers fetch event.
 - **`assets.directory`** — points at the views built by `frac build`. Cloudflare serves these at the edge before requests reach your worker.
-- **`define.process.env.NODE_ENV`** — forces production mode even under `wrangler dev`. Without it, wrangler defaults to `development` locally and Frac's development tooling can be pulled into the worker bundle.
+- **`define.process.env.NODE_ENV`** — forces production mode even under `wrangler dev`. Without it, wrangler defaults to `development` locally and frac's development tooling can be pulled into the worker bundle.
 
 ### Build and deploy
 
@@ -81,12 +81,12 @@ bunx wrangler dev
 </CodeGroup>
 
 <Note>
-Frac's local dev server (`frac dev`) and the Cloudflare path are independent. Use `frac dev` for fast iteration on Node with HMR; use `wrangler dev` to validate the production worker bundle before shipping.
+frac's local dev server (`frac dev`) and the Cloudflare path are independent. Use `frac dev` for fast iteration on Node with HMR; use `wrangler dev` to validate the production worker bundle before shipping.
 </Note>
 
 ## Docker
 
-Projects created with the [Frac scaffolder](/quickstart/create-new-app#scaffold-your-project) include a multi-stage `Dockerfile` so you can self-host on any container platform:
+Projects created with the [frac scaffolder](/quickstart/create-new-app#scaffold-your-project) include a multi-stage `Dockerfile` so you can self-host on any container platform:
 
 <CodeGroup>
 ```bash npm
@@ -114,7 +114,7 @@ The package manager is detected from the lockfile (`package-lock.json`, `yarn.lo
 
 <CardGroup cols={2}>
   <Card title="Core Concepts" icon="lightbulb" href="/concepts">
-    Learn how Frac extends the raw APIs with React hooks
+    Learn how frac extends the raw APIs with React hooks
   </Card>
   <Card title="API Reference" icon="book" href="/api-reference">
     Browse the complete API documentation

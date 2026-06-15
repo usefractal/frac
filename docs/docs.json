@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Frac",
+  "name": "frac",
   "theme": "mint",
   "colors": {
     "primary": "#111827",
@@ -16,7 +16,7 @@
     "dark": "/images/logo.png"
   },
   "search": {
-    "prompt": "Search Frac docs..."
+    "prompt": "Search frac docs..."
   },
   "navigation": {
     "tabs": [
@@ -188,7 +188,7 @@
   "seo": {
     "indexing": "navigable",
     "metatags": {
-      "og:site_name": "Frac Documentation",
+      "og:site_name": "frac Documentation",
       "og:type": "website"
     }
   },

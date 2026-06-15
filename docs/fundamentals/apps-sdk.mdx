@@ -39,13 +39,13 @@ Views run inside an iframe and have access to a special [`window.openai`](https:
 | `openExternal()` | Open external URLs safely |
 | `setOpenInAppUrl()` | Set URL for the "Open in &lt;App&gt;" button in fullscreen mode |
 
-This API is powerful but low-level and imperative—which is where Frac comes in.
+This API is powerful but low-level and imperative—which is where frac comes in.
 
-## Frac Hook Mapping
+## frac Hook Mapping
 
-Frac wraps the raw `window.openai` API with React hooks:
+frac wraps the raw `window.openai` API with React hooks:
 
-| Raw API | Frac Hook | Purpose |
+| Raw API | frac Hook | Purpose |
 |---------|----------------|---------|
 | `window.openai.toolInput`, `toolOutput`, `toolResponseMetadata` | [`useToolInfo()`](/api-reference/use-tool-info) | Access tool input, output, and `_meta` |
 | `window.openai.widgetState` and `window.openai.setWidgetState` | [`useViewState()`](/api-reference/use-view-state) | Persistent view state |
@@ -60,7 +60,7 @@ Frac wraps the raw `window.openai` API with React hooks:
 | `window.openai.setOpenInAppUrl()` | [`useSetOpenInAppUrl()`](/api-reference/use-set-open-in-app-url) | "Open in App" button URL in fullscreen |
 | `window.openai.requestClose()` | [`useRequestClose()`](/api-reference/use-request-close) | Close the view from the UI (e.g. user dismisses) |
 
-## Frac Apps SDK Exclusive Features
+## frac Apps SDK Exclusive Features
 
 These features are **only available in ChatGPT** and not supported in MCP Apps:
 
@@ -113,6 +113,6 @@ ChatGPT has aggressive caching. Use local MCP tooling for fast iteration, then t
 ## Related
 
 - [MCP Apps](/fundamentals/mcp-apps) - The open alternative runtime
-- [Write Once, Run Everywhere](/concepts/write-once-run-everywhere) - How Frac handles both runtimes
+- [Write Once, Run Everywhere](/concepts/write-once-run-everywhere) - How frac handles both runtimes
 - [useSetOpenInAppUrl](/api-reference/use-set-open-in-app-url) - Open in App URL API reference
 - [useFiles](/api-reference/use-files) - File operations API reference

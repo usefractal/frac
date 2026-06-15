@@ -32,7 +32,7 @@ export default function Onboarding() {
         <div className="shrink-0 self-center animate-float">
           <img
             src={img}
-            alt="Frac mascot"
+            alt="frac mascot"
             className="h-32 w-32 md:h-50 md:w-50 object-contain animate-twirl"
           />
         </div>

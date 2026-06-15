@@ -36,7 +36,7 @@ export default class Start extends Command {
     }
 
     console.log(
-      `\x1b[36m\x1b[1m⛰ Frac\x1b[0m \x1b[36mv${this.config.version}\x1b[0m`,
+      `\x1b[36m\x1b[1m⛰ frac\x1b[0m \x1b[36mv${this.config.version}\x1b[0m`,
     );
     if (fallback) {
       console.log(

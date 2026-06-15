@@ -1,7 +1,7 @@
 {
   "name": "frac",
   "version": "1.0.0",
-  "description": "Frac is a framework for building MCP Apps",
+  "description": "frac is a framework for building MCP Apps",
   "repository": {
     "type": "git",
     "url": "https://github.com/fractal/frac.git"

@@ -13,7 +13,7 @@ You should already have:
 - A working MCP server using the official [TypeScript MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 - Node.js 24+
 
-## Install Frac
+## Install frac
 
 ```bash
 pnpm add frac
@@ -21,7 +21,7 @@ pnpm add frac
 
 ## Update your server
 
-Replace your `McpServer` import with Frac's enhanced version:
+Replace your `McpServer` import with frac's enhanced version:
 
 ```typescript
 // Before
@@ -43,7 +43,7 @@ your-project/
 │   ├── server.ts             # MCP server entry
 │   └── views/
 │       └── my-view.tsx     # View component
-├── vite.config.ts            # Vite + Frac plugin
+├── vite.config.ts            # Vite + frac plugin
 ├── tsconfig.json
 └── package.json
 ```
@@ -89,7 +89,7 @@ Create `src/views/my-view.tsx` and `export default` a React component:
 export default function MyView() {
   return (
     <div>
-      <h2>Hello from Frac!</h2>
+      <h2>Hello from frac!</h2>
       <p>Your view is working!</p>
     </div>
   );

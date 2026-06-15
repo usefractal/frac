@@ -15,7 +15,7 @@ function passthrough(args: string[]): never {
 }
 
 export default class Create extends Command {
-  static override description = "Scaffold a new Frac project";
+  static override description = "Scaffold a new frac project";
   static override strict = false;
 
   public async run(): Promise<void> {

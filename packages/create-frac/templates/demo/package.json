@@ -2,7 +2,7 @@
   "name": "frac-demo",
   "version": "0.0.1",
   "private": true,
-  "description": "Frac MCP App template",
+  "description": "frac MCP App template",
   "type": "module",
   "scripts": {
     "dev": "frac dev",

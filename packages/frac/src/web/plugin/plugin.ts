@@ -110,7 +110,7 @@ function resolveDefaultFractalsDir(projectRoot: string): string {
 }
 
 /**
- * Vite plugin that wires a Frac project's view files into Vite.
+ * Vite plugin that wires a frac project's view files into Vite.
  *
  * For each `.tsx` / `.jsx` file in `viewsDir` with a default export, the
  * plugin:

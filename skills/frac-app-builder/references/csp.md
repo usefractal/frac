@@ -30,4 +30,4 @@ server.registerTool(
 );
 ```
 
-Frac auto-includes the server's domain. Only add external domains.
+frac auto-includes the server's domain. Only add external domains.

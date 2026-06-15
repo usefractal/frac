@@ -1,6 +1,6 @@
-# Frac Boilerplate
+# frac Boilerplate
 
-A minimal TypeScript boilerplate for building MCP Apps with the [Frac](https://docs.usefractal.dev) SDK.
+A minimal TypeScript boilerplate for building MCP Apps with the [frac](https://docs.usefractal.dev) SDK.
 
 ## Getting Started
 
@@ -77,9 +77,9 @@ Prefer existing MCP App testing tools such as Sunpeak or MCPJam when you want an
 
 ## Deploy to Production
 
-Frac is infrastructure vendor agnostic, and your app can be deployed on any platform that can host an HTTP MCP server and static view assets.
+frac is infrastructure vendor agnostic, and your app can be deployed on any platform that can host an HTTP MCP server and static view assets.
 
 ## Resources
-- [Frac Documentation](https://docs.usefractal.dev/)
+- [frac Documentation](https://docs.usefractal.dev/)
 - [MCP Apps Documentation](https://github.com/modelcontextprotocol/ext-apps/tree/main)
 - [Model Context Protocol Documentation](https://modelcontextprotocol.io/)

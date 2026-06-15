@@ -8,7 +8,7 @@ import type { UnknownObject } from "../types.js";
  * is restored on subsequent renders of the same tool invocation.
  *
  * Returns a `[state, setState]` pair with the same ergonomics as
- * `useState`. State is filtered to strip Frac-internal context fields
+ * `useState`. State is filtered to strip frac-internal context fields
  * (see {@link DataLLM}) before being returned to your component.
  *
  * Provide a `defaultState` (value or lazy initializer) to get a non-nullable

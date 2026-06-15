@@ -3,7 +3,7 @@ title: Fractals
 description: "Build model-composed UIs from registered React component primitives."
 ---
 
-Fractals are reusable React component primitives that the model can compose into a UI. You register each Fractal on the server with a component name and prop schema. Frac exposes a generated render tool that accepts JSX using only registered Fractals.
+Fractals are reusable React component primitives that the model can compose into a UI. You register each Fractal on the server with a component name and prop schema. frac exposes a generated render tool that accepts JSX using only registered Fractals.
 
 This is useful when you want the model to choose an interface layout while keeping the actual UI components constrained, typed, and owned by your app.
 
@@ -18,7 +18,7 @@ src/
     HeroPanel.tsx
 ```
 
-Frac scans `src/fractals` by default. If that directory does not exist, it falls back to `src/atoms`.
+frac scans `src/fractals` by default. If that directory does not exist, it falls back to `src/atoms`.
 
 ## Register Fractals
 
@@ -100,7 +100,7 @@ export default function HeroPanel({ title, summary }: HeroPanelProps) {
 
 ## Generated Render Tool
 
-When at least one Fractal is registered, Frac creates a render tool for model-composed UIs. The model can return JSX such as:
+When at least one Fractal is registered, frac creates a render tool for model-composed UIs. The model can return JSX such as:
 
 ```tsx
 <Stack gap="md">
@@ -113,7 +113,7 @@ When at least one Fractal is registered, Frac creates a render tool for model-co
 </Stack>
 ```
 
-Frac type-checks the JSX against the registered Fractal names and prop schemas before rendering. The model can compose layouts, but it cannot import arbitrary components or escape the component registry.
+frac type-checks the JSX against the registered Fractal names and prop schemas before rendering. The model can compose layouts, but it cannot import arbitrary components or escape the component registry.
 
 ## Related
 

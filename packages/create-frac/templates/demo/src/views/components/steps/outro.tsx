@@ -13,7 +13,7 @@ const LINKS = [
   {
     icon: BookOpen,
     title: "Read the docs",
-    description: "Learn more about Frac concepts, API, and tooling.",
+    description: "Learn more about frac concepts, API, and tooling.",
     href: "https://docs.usefractal.dev",
   },
 ];
