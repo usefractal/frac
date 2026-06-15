@@ -56,11 +56,11 @@ jobs:
 
       - name: Pin demo template frac dep for publish
         working-directory: ./packages/create-frac/templates/demo
-        run: pnpm pkg set 'dependencies.frac=^${{ steps.version.outputs.version }}'
+        run: pnpm pkg set 'dependencies.@usefractal/frac=^${{ steps.version.outputs.version }}'
 
       - name: Pin blank template frac dep for publish
         working-directory: ./packages/create-frac/templates/blank
-        run: pnpm pkg set 'dependencies.frac=^${{ steps.version.outputs.version }}'
+        run: pnpm pkg set 'dependencies.@usefractal/frac=^${{ steps.version.outputs.version }}'
 
       - name: Publish create-frac
         working-directory: ./packages/create-frac

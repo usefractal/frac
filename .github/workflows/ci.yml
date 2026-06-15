@@ -16,11 +16,11 @@ jobs:
       matrix:
         include:
           - name: Unit Tests
-            command: pnpm --filter frac test:unit && pnpm --filter create-frac test:unit
+            command: pnpm --filter @usefractal/frac test:unit && pnpm --filter @usefractal/create-frac test:unit
           - name: Lint & Format
-            command: pnpm --filter frac test:format && pnpm --filter create-frac test:format
+            command: pnpm --filter @usefractal/frac test:format && pnpm --filter @usefractal/create-frac test:format
           - name: Build
-            command: pnpm --filter frac build && pnpm --filter create-frac build
+            command: pnpm --filter @usefractal/frac build && pnpm --filter @usefractal/create-frac build
     steps:
       - uses: actions/checkout@v6
 
@@ -56,7 +56,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build frac
-        run: pnpm --filter frac build
+        run: pnpm --filter @usefractal/frac build
 
       - name: Build templates
         run: |
