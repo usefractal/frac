@@ -1,0 +1,7 @@
+node_modules
+dist
+*.tsbuildinfo
+.env
+cdk.out
+.frac/
+packages/frac/src/server/templates.generated.js

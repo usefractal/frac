@@ -1,0 +1,12 @@
+packages:
+  - "docs"
+  - "packages/frac"
+  - "packages/create-frac"
+  - "packages/create-frac/templates/blank"
+
+allowBuilds:
+  esbuild: true
+
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

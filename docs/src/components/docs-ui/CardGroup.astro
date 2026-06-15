@@ -1,0 +1,11 @@
+---
+type Props = {
+  cols?: number;
+};
+
+const { cols = 2 } = Astro.props;
+---
+
+<div class="frac-card-grid" style={`--frac-card-grid-cols: ${cols}`}>
+  <slot />
+</div>

@@ -1,0 +1,123 @@
+---
+title: Deploy
+description: "Deploy your App and share it to your users"
+sidebar_position: 4
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+You can deploy your frac App as a Node.js server on any compatible infrastructure provider, or to Cloudflare Workers via the `nodejs_compat` runtime.
+
+Below are two common deployment targets. frac does not require a specific hosting provider; any platform that can run the server and expose `/mcp` over HTTPS can host your app.
+
+## Cloudflare Workers
+
+frac runs on Cloudflare Workers via [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/) and the `nodejs_compat` runtime. Static assets (your built views) are served by Cloudflare's edge directly; the worker handles `/mcp` traffic and any other dynamic routes.
+
+### Configure
+
+Add a `wrangler.jsonc` at your project root:
+
+```jsonc
+{
+  "name": "your-frac-app",
+  "main": "dist/server.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "dist/assets" },
+  "define": {
+    "process.env.NODE_ENV": "\"production\""
+  }
+}
+```
+
+Each setting is load-bearing:
+
+- **`compatibility_date >= 2025-09-01`** + **`nodejs_compat`** — enables `cloudflare:node`'s `httpServerHandler`, which frac uses to bridge the Express app to the Workers fetch event.
+- **`assets.directory`** — points at the views built by `frac build`. Cloudflare serves these at the edge before requests reach your worker.
+- **`define.process.env.NODE_ENV`** — forces production mode even under `wrangler dev`. Without it, wrangler defaults to `development` locally and frac's development tooling can be pulled into the worker bundle.
+
+### Build and deploy
+
+<CodeGroup>
+```bash npm
+npm run build
+npx wrangler deploy
+```
+```bash pnpm
+pnpm build
+pnpm dlx wrangler deploy
+```
+```bash yarn
+yarn build
+yarn dlx wrangler deploy
+```
+```bash bun
+bun run build
+bunx wrangler deploy
+```
+</CodeGroup>
+
+### Test locally
+
+`wrangler dev` runs your worker in workerd on your machine — the same runtime as production, not a Node.js fallback:
+
+<CodeGroup>
+```bash npm
+npm run build
+npx wrangler dev
+```
+```bash pnpm
+pnpm build
+pnpm dlx wrangler dev
+```
+```bash yarn
+yarn build
+yarn dlx wrangler dev
+```
+```bash bun
+bun run build
+bunx wrangler dev
+```
+</CodeGroup>
+
+<Note>
+frac's local dev server (`frac dev`) and the Cloudflare path are independent. Use `frac dev` for fast iteration on Node with HMR; use `wrangler dev` to validate the production worker bundle before shipping.
+</Note>
+
+## Docker
+
+Projects created with the [frac scaffolder](/quickstart/create-new-app#scaffold-your-project) include a multi-stage `Dockerfile` so you can self-host on any container platform:
+
+<CodeGroup>
+```bash npm
+npm install
+docker build -t my-app .
+docker run -p 3000:3000 my-app
+```
+```bash pnpm
+pnpm install
+docker build -t my-app .
+docker run -p 3000:3000 my-app
+```
+```bash yarn
+yarn install
+docker build -t my-app .
+docker run -p 3000:3000 my-app
+```
+</CodeGroup>
+
+<Note>
+The package manager is detected from the lockfile (`package-lock.json`, `yarn.lock`, or `pnpm-lock.yaml`). Bun and Deno are not supported yet: you'll need to adapt the build stage inside the Dockerfile.
+</Note>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Core Concepts" icon="lightbulb" href="/concepts">
+    Learn how frac extends the raw APIs with React hooks
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Browse the complete API documentation
+  </Card>
+</CardGroup>

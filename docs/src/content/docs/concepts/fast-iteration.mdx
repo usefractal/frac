@@ -1,0 +1,101 @@
+---
+title: Fast Iteration
+description: "Develop Apps locally with frac's Vite plugin, hot reload, and MCP testing tools."
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+**Problem:** Testing views only inside remote MCP clients is slow. It requires a reachable URL, manual reconnection, and repeated model prompts.
+
+**Solution:** frac keeps the server and views running locally while Vite handles view hot reload. Use a local MCP testing tool such as Sunpeak or MCPJam for quick tool calls, then validate in ChatGPT, Claude, or another target client before shipping.
+
+## Development Loop
+
+Start the development server:
+
+```bash
+pnpm dev
+```
+
+frac starts:
+
+- Your MCP server at `http://localhost:3000/mcp`
+- A Vite dev server for your React views
+- File watching for server-side code
+- Hot Module Replacement for view code
+
+The normal loop is:
+
+1. Make a code change.
+2. Let the server restart or the view hot-reload.
+3. Call the MCP tool from Sunpeak, MCPJam, or your target client.
+4. Inspect the structured output and rendered view.
+
+## HMR with Vite Plugin
+
+frac includes a Vite plugin that enables Hot Module Replacement for views:
+
+```typescript
+// vite.config.ts
+import { frac } from "@usefractal/frac/vite";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react(), frac()],
+});
+```
+
+The plugin:
+
+- Auto-discovers views in `src/views/`
+- Enables HMR so view changes update without a full rebuild
+- Transforms `data-llm` attributes at build time
+- Configures build output with stable asset paths
+
+<Info>
+**Starter template required**
+
+These features are preconfigured in projects created with `pnpm create @usefractal/frac`. If you're adding frac to an existing app, configure the Vite plugin manually.
+</Info>
+
+## Runtime Detection
+
+Your view code works across ChatGPT and MCP Apps clients. frac detects the environment and uses the appropriate communication layer:
+
+| Environment | Communication |
+|-------------|---------------|
+| ChatGPT | `window.openai` API |
+| MCP Apps clients | MCP Apps postMessage protocol |
+
+You do not need runtime-specific branches for common hooks.
+
+## When to Use What
+
+**Local MCP tooling**
+
+- Rapid tool iteration
+- Input and output inspection
+- Debugging state and rendering issues
+- Day-to-day development
+
+**ChatGPT, Claude, or other MCP Apps clients**
+
+- Final integration testing
+- Real LLM conversation flow
+- Host-specific behavior
+- Pre-ship validation
+
+<Tip>
+**Workflow**
+
+Build locally, validate with local MCP tooling, then connect a deployed or tunneled `/mcp` URL to your target client.
+
+See [Test Your App](/quickstart/test-your-app) for detailed testing setup instructions.
+</Tip>
+
+## Related
+
+- [Test Your App](/quickstart/test-your-app)
+- [useLayout API](/api-reference/use-layout)
+- [useCallTool API](/api-reference/use-call-tool)

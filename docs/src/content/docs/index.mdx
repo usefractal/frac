@@ -1,0 +1,158 @@
+---
+title: "Start building with frac"
+description: "Everything you need to create MCP and ChatGPT Apps, from brainstorming to production."
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+**frac is a fullstack TypeScript framework for building MCP and ChatGPT Apps: interactive views that render inside AI conversations. Define tools, write React components, and let frac do the rest:**
+
+<CodeGroup>
+```ts src/server.ts
+import { McpServer } from "@usefractal/frac/server";
+import { z } from "zod";
+
+const server = new McpServer({ name: "my-app", version: "0.0.1" }, {})
+  .registerTool(
+    {
+      name: "greeting",
+      description: "Greet someone by name.",
+      inputSchema: { name: z.string() },
+      view: { component: "greeting" },
+    },
+    async ({ name }) => {
+      return { structuredContent: { message: `Hello, ${name}!` } };
+    },
+  );
+```
+
+```tsx src/views/greeting.tsx
+import { useToolInfo } from "../helpers.js"; // auto-generated from server schema
+
+export default function Greeting() {
+  const { output } = useToolInfo<"greeting">();
+  return <h1>{output.message}</h1>;
+}
+```
+</CodeGroup>
+
+<CardGroup cols={2}>
+    <Card title="Quickstart" icon="bolt" href="/quickstart/create-new-app">
+        Scaffold a working app in one command and start building in minutes.
+    </Card>
+    <Card title="Migrate an App" icon="right-to-bracket" href="/quickstart/migrate">
+        Bring an existing Apps SDK or MCP Apps project into frac.
+    </Card>
+</CardGroup>
+
+---
+
+## Solving the Three Body Problem
+
+MCP Apps and ChatGPT Apps are a new kind of software built for a new surface: the conversation itself. Under the hood, an MCP server exposes tools. Some are bound to UI templates, and when the model calls one, the host can render the corresponding view inline with the tool's output.
+
+This looks simple, but it introduces a fundamental shift. Traditional apps have two actors: the user and the interface. These apps have three: the **user**, the **UI**, and the **model**. This creates **context asymmetry**: each actor holds a partial view of the system. The model is blind to the UI: it can't see visuals or user interactions unless you explicitly sync them back. The user can't see the structured data flowing underneath. Building well means understanding these blind spots and designing the information flow between all three.
+
+## Architecting
+
+The frac Skill acts as a design partner: helping you brainstorm ideas, validate your UX, and design apps that make sense inside ChatGPT or Claude.
+
+The core design challenge isn't layout or styling: it's **deciding who sees what, and when**. What does the model need to know and when? What should stay hidden from it? Where should natural language replace traditional UI? frac gives you the primitives to make these decisions explicit, and the Skill helps you think through them upfront.
+
+<CardGroup cols={2}>
+  <Card title="Migrate an App" icon="right-to-bracket" href="/quickstart/migrate">
+    Bring an existing app into frac with AI-assisted migration guidance.
+  </Card>
+  <Card title="Read the Fundamentals" icon="graduation-cap" href="/fundamentals">
+    Understand MCP, ChatGPT Apps, and how frac bridges the two runtimes.
+  </Card>
+</CardGroup>
+
+---
+
+## Building
+
+Scaffold a new project in one command:
+
+<CodeGroup>
+```bash npm
+npm create @usefractal/frac@latest my-app
+```
+```bash pnpm
+pnpm create @usefractal/frac my-app
+```
+```bash yarn
+yarn create @usefractal/frac my-app
+```
+```bash bun
+bun create @usefractal/frac my-app
+```
+</CodeGroup>
+
+You can also install the frac Skill so your AI coding assistant has framework-specific guidance for bootstrapping, maintaining, and migrating projects:
+
+```bash
+npx skills add fractal-mcp/frac -s frac
+```
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Browse the framework API.
+  </Card>
+  <Card title="Quickstart" icon="bolt" href="/quickstart/create-new-app">
+    Scaffold and run your first app
+  </Card>
+  <Card title="Migrate" icon="right-to-bracket" href="/quickstart/migrate">
+    Migrate an existing app
+  </Card>
+
+</CardGroup>
+
+---
+
+## Testing and shipping
+
+frac gives you a fast local loop, then smooth paths to production.
+
+<Steps>
+  <Step title="Develop locally">
+    Run `npm run dev` to start your MCP server at `http://localhost:3000/mcp`. View changes hot-reload instantly through the Vite dev server.
+  </Step>
+  <Step title="Test in ChatGPT, Claude, and more">
+    Use Sunpeak, MCPJam, or another local MCP tester during development. For hosted clients, deploy the server or expose your own public `/mcp` URL.
+  </Step>
+  <Step title="Build and deploy">
+    Run `npm run build`, then host on any platform that can serve the MCP endpoint and built view assets.
+  </Step>
+</Steps>
+
+<CardGroup cols={3}>
+  <Card title="Test Your App" icon="flask-vial" href="/quickstart/test-your-app">
+    Local MCP tooling and production testing
+  </Card>
+  <Card title="Build for Production" icon="hammer" href="/quickstart/build-for-production">
+    Compile and optimize
+  </Card>
+  <Card title="Deploy" icon="cloud-arrow-up" href="/quickstart/deploy">
+    Ship to Cloudflare Workers or self-host
+  </Card>
+</CardGroup>
+
+---
+
+## Keep learning
+
+<CardGroup cols={2}>
+  <Card title="Fetching Data" icon="database" href="/guides/fetching-data">
+    Initial hydration and user-triggered data fetching patterns.
+  </Card>
+  <Card title="Managing State" icon="floppy-disk" href="/guides/managing-state">
+    Persistent state with useViewState and createStore.
+  </Card>
+  <Card title="Communicating with the Model" icon="comments" href="/guides/communicating-with-model">
+    Keep the LLM aware of what happens in your UI.
+  </Card>
+  <Card title="Host Environment Context" icon="palette" href="/guides/host-environment-context">
+    Adapt to theme, locale, display mode, and device.
+  </Card>
+</CardGroup>

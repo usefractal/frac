@@ -1,0 +1,22 @@
+---
+title: useRequestClose
+description: "Request the host to close (dismiss) the view from inside your app."
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+The `useRequestClose` hook returns a function that asks the host to dismiss the view. Use it when the user has finished a flow and you want to return them to the conversation.
+
+```tsx
+import { useRequestClose } from "@usefractal/frac/web";
+
+function DoneButton() {
+  const requestClose = useRequestClose();
+
+  return (
+    <button onClick={() => requestClose()}>
+      Done
+    </button>
+  );
+}
+```

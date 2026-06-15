@@ -1,0 +1,14 @@
+---
+type Props = {
+  title: string;
+};
+
+const { title } = Astro.props;
+---
+
+<li class="frac-step">
+  <strong>{title}</strong>
+  <div>
+    <slot />
+  </div>
+</li>

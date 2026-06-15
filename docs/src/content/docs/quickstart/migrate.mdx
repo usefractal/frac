@@ -1,0 +1,36 @@
+---
+title: Migrate
+description: "Migrate ChatGPT App or ext-apps to frac"
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+Already have an app built with the [OpenAI Apps SDK](https://developers.openai.com/apps-sdk/) or [`@modelcontextprotocol/ext-apps`](https://github.com/modelcontextprotocol/ext-apps)? The frac Skill can migrate it for you — it teaches your coding agent the full frac framework so it can scaffold, rewrite, and wire up your project automatically.
+
+## Install the skill
+
+<CodeGroup>
+```bash npm
+npx skills add fractal-mcp/frac -s frac
+```
+```bash pnpm
+pnpm dlx skills add fractal-mcp/frac -s frac
+```
+```bash yarn
+yarn dlx skills add fractal-mcp/frac -s frac
+```
+```bash bun
+bunx skills add fractal-mcp/frac -s frac
+```
+```bash deno
+deno run -A npm:skills add fractal-mcp/frac -s frac
+```
+</CodeGroup>
+
+## Prompt your agent
+
+```
+Migrate my app to @usefractal/frac
+```
+
+That's it. Once migrated, keep using the Skill for ongoing development: brainstorming ideas, designing views and tools, running the dev server, debugging, and preparing for deployment.

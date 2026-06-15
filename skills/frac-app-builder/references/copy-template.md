@@ -1,0 +1,33 @@
+# Start From Template
+
+Scaffold a project by setting up the frac template starter. frac is a TypeScript SDK for building MCP servers with type-safe APIs and React views.
+
+## Workflow
+
+1. Ask: "Which package manager?" (npm / pnpm / yarn / bun / deno)
+
+2. Run (do not `rm` beforehand—create handles conflicts):
+```bash
+npm create @usefractal/frac@latest {target-dir}
+
+# pnpm
+pnpm create @usefractal/frac {target-dir}
+
+# yarn
+yarn create @usefractal/frac {target-dir}
+
+# bun
+bun create @usefractal/frac {target-dir}
+
+# deno
+deno run -A npm:@usefractal/create-frac@latest {target-dir}
+```
+
+3. [Start the dev server](run-locally.md). Read logs to assess readiness/health; fix any errors (TypeScript, etc.) before proceeding.
+
+4. Start implementing your app using these core concepts:
+- Server handlers and view components → [fetch-and-render-data.md](fetch-and-render-data.md)
+- View state and LLM context → [state-and-context.md](state-and-context.md)
+- Display modes → [ui-guidelines.md](ui-guidelines.md)
+
+5. Delete unused views files and leftover code.

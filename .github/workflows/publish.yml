@@ -1,0 +1,103 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+  pages: write
+
+concurrency:
+  group: "release-publish"
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: pnpm/action-setup@v5
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+      - name: Set version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: invalid release version '$VERSION'. Expected X.Y.Z."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=latest" >> $GITHUB_OUTPUT
+
+      - name: Set frac version
+        working-directory: ./packages/frac
+        run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
+      - name: Set create-frac version
+        working-directory: ./packages/create-frac
+        run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
+      - name: Publish frac
+        working-directory: ./packages/frac
+        run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
+
+      - name: Pin blank template frac dep for publish
+        working-directory: ./packages/create-frac/templates/blank
+        run: pnpm pkg set 'dependencies.@usefractal/frac=^${{ steps.version.outputs.version }}'
+
+      - name: Publish create-frac
+        working-directory: ./packages/create-frac
+        run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
+
+  deploy-docs:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs
+        run: pnpm docs:build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/dist
+
+      - name: Deploy docs to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

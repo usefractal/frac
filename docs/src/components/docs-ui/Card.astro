@@ -1,0 +1,20 @@
+---
+type Props = {
+  title: string;
+  icon?: string;
+  href?: string;
+};
+
+const { title, icon, href } = Astro.props;
+const Tag = href ? "a" : "div";
+---
+
+<Tag class="frac-card" href={href}>
+  <div class="frac-card__header">
+    {icon && <span class="frac-card__icon" aria-hidden="true">{icon}</span>}
+    <strong>{title}</strong>
+  </div>
+  <div class="frac-card__body">
+    <slot />
+  </div>
+</Tag>

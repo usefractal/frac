@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Astro
+.astro/
+dist/
+
+# Misc
+.DS_Store
+.env.local
+.env*.local
+
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

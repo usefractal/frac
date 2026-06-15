@@ -1,0 +1,203 @@
+---
+title: "CLI Reference"
+description: "Complete reference for frac CLI commands"
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+frac provides two CLI tools: the main `frac` CLI for development and production workflows, and `create-frac` for bootstrapping new projects.
+
+## frac CLI
+
+The main CLI is available as `frac` after installing `@usefractal/frac` in your project.
+
+### frac dev
+
+Start the development server with hot module reloading.
+
+```bash
+frac dev
+```
+
+- Starts a development server at `http://localhost:3000/`
+- Exposes MCP server at `http://localhost:3000/mcp`
+- Enables file watching with automatic server restart
+- Enables Hot Module Reloading (HMR) for views
+
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `-p, --port <number>` | Port to run the server on. Defaults to `3000`, or the next available port if `3000` is in use. |
+| `--open` | Open the local app URL in your browser when the server is ready. |
+
+You can also set the port via the `PORT` environment variable:
+
+```bash
+PORT=8080 frac dev
+```
+
+If you'd rather open the local app URL automatically, export `FRAC_OPEN=true` at the shell level (e.g. in your `~/.zshrc`, `~/.bashrc`, or shell profile). It's equivalent to passing `--open` on every run:
+
+```bash
+# one-off
+FRAC_OPEN=true frac dev
+
+# persistent (add to your shell profile)
+export FRAC_OPEN=true
+```
+
+---
+
+### frac build
+
+Build your views and MCP server for production deployment.
+
+```bash
+frac build
+```
+
+**What it does:**
+
+1. **Building views** - Compiles your React views using Vite
+2. **Compiling server** - Transpiles TypeScript server code
+3. **Copying static assets** - Moves built assets to the `dist/` directory
+
+The output is placed in the `dist/` directory, ready for production deployment.
+
+---
+
+### frac start
+
+Start the production server.
+
+```bash
+frac start
+```
+
+**Requirements:**
+- Must run `frac build` first
+- Requires `dist/server.js` to exist
+
+**What it does:**
+- Runs the compiled server from `dist/server.js`
+- Sets `NODE_ENV=production`
+- Serves the MCP endpoint at `http://localhost:3000/mcp`
+- Serves pre-built view assets from `/assets`
+
+---
+
+## create-frac
+
+A standalone CLI for bootstrapping new frac projects.
+
+```bash
+npm create @usefractal/frac@latest [directory]
+```
+
+Or with other package managers:
+
+<CodeGroup>
+```bash npm
+npm create @usefractal/frac@latest
+```
+```bash pnpm
+pnpm create @usefractal/frac@latest
+```
+```bash yarn
+yarn create @usefractal/frac
+```
+```bash bun
+bun create @usefractal/frac
+```
+</CodeGroup>
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `[directory]` | Target directory for the new project. If not specified, you'll be prompted to enter a project name. Use `.` to create in the current directory. |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | Show help message |
+| `--overwrite` | Remove existing files in target directory without prompting |
+| `--pm <choice>` | Package manager to use: `bun`, `deno`, `npm`, `pnpm`, or `yarn` |
+| `--skip-skills` | Skip installing coding agent skills |
+| `--start` | Start the development server after scaffolding |
+| `--yes` | Skip prompts and use defaults for unprovided options |
+
+### Examples
+
+**Create a new project interactively:**
+
+```bash
+npm create @usefractal/frac@latest
+```
+
+**Create a project in a specific directory:**
+
+```bash
+npm create @usefractal/frac@latest my-app
+```
+
+**Create in current directory, overwrite existing files, and start immediately:**
+
+```bash
+npm create @usefractal/frac@latest . --overwrite --start
+```
+
+### What it creates
+
+The scaffolder copies a starter template that includes:
+
+- `src/server.ts` - MCP server entry point
+- `src/helpers.ts` - typed React helper generation
+- `package.json` - Pre-configured with all dependencies
+- `tsconfig.json` - TypeScript configuration
+- `vite.config.ts` - Vite configuration for view bundling
+- `Dockerfile` - production container setup
+
+---
+
+## Package Manager Scripts
+
+When you create a new frac project, the `package.json` includes these scripts:
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `dev` | `frac dev` | Start development server |
+| `build` | `frac build` | Build for production |
+| `start` | `frac start` | Start production server |
+
+Run them with your package manager:
+
+<CodeGroup>
+```bash npm
+npm run dev
+npm run build
+npm start
+```
+```bash pnpm
+pnpm dev
+pnpm build
+pnpm start
+```
+```bash yarn
+yarn dev
+yarn build
+yarn start
+```
+```bash bun
+bun dev
+bun build
+bun start
+```
+```bash deno
+deno task dev
+deno task build
+deno task start
+```
+</CodeGroup>
