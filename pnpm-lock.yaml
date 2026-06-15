@@ -149,6 +149,9 @@ importers:
       '@oclif/core':
         specifier: ^4.10.3
         version: 4.10.3
+      '@usefractal/fracctl-core':
+        specifier: ^0.3.1
+        version: 0.3.1
       cors:
         specifier: ^2.8.6
         version: 2.8.6
@@ -1080,6 +1083,10 @@ packages:
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
+
+  '@usefractal/fracctl-core@0.3.1':
+    resolution: {integrity: sha512-P2kIegI6JqWRypEMpMwi7cIVSvsP3zqWimou2pyU+h+t/Mvd49vbPvchCqepxB6nzWvSRKhoVe/jOxK2fIhaog==}
+    engines: {node: '>=20'}
 
   '@vitejs/plugin-react@6.0.1':
     resolution: {integrity: sha512-l9X/E3cDb+xY3SWzlG1MOGt2usfEHGMNIaegaUGFsLkb3RCn/k8/TOXBcab+OndDI4TBtktT8/9BwwW8Vi9KUQ==}
@@ -3565,6 +3572,8 @@ snapshots:
     optional: true
 
   '@types/tough-cookie@4.0.5': {}
+
+  '@usefractal/fracctl-core@0.3.1': {}
 
   '@vitejs/plugin-react@6.0.1(vite@8.0.3(@types/node@24.12.0)(esbuild@0.27.2)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:

@@ -75,13 +75,156 @@ frac start
 
 **Requirements:**
 - Must run `frac build` first
-- Requires `dist/index.js` to exist
+- Requires `dist/server.js` to exist
 
 **What it does:**
-- Runs the compiled server from `dist/index.js`
+- Runs the compiled server from `dist/server.js`
 - Sets `NODE_ENV=production`
 - Serves the MCP endpoint at `http://localhost:3000/mcp`
 - Serves pre-built view assets from `/assets`
+
+---
+
+## Fractal Cloud Commands
+
+The main `frac` CLI also includes commands for authenticating with Fractal Cloud, deploying projects, opening project databases, and managing Cloud Storage.
+
+### Environment
+
+| Variable | Description |
+|----------|-------------|
+| `FRACTAL_API_URL` | Fractal backend URL. Defaults to `https://web-api.usefractal.dev`. |
+| `FRACTAL_PROJECT_ID` | Fallback project ID when `frac.json` is not present. |
+
+Project-aware commands resolve the project ID in this order:
+
+1. `--project <id>`
+2. nearest `frac.json`
+3. `FRACTAL_PROJECT_ID`
+
+`frac.json` should contain:
+
+```json
+{
+  "projectId": "project_123"
+}
+```
+
+### frac auth login
+
+Log in with your Fractal account and store the session in macOS Keychain.
+
+```bash
+frac auth login
+```
+
+### frac auth status
+
+Show the current login status.
+
+```bash
+frac auth status
+```
+
+### frac auth logout
+
+Remove the stored session from macOS Keychain.
+
+```bash
+frac auth logout
+```
+
+### frac token
+
+Print a scoped `FRACTAL_CLOUD_TOKEN`.
+
+```bash
+frac token
+```
+
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `--project <id>` | Project ID. Defaults to `frac.json`, then `FRACTAL_PROJECT_ID`. |
+| `--env <dev\|prod>` | Cloud environment. Defaults to `dev`. |
+| `--ttl <seconds>` | Token lifetime. Maximum `3600` seconds. |
+| `--format <env\|raw\|json>` | Output format. Defaults to `env`. |
+
+Examples:
+
+```bash
+frac token --project project_123 --env prod --ttl 3600
+frac token --format raw
+frac token --format json
+```
+
+### frac sql
+
+Open a SQL shell for a project database.
+
+```bash
+frac sql
+```
+
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `--project <id>` | Project ID. Defaults to `frac.json`, then `FRACTAL_PROJECT_ID`. |
+| `--env <dev\|prod>` | Cloud environment. Defaults to `dev`. |
+
+Requires `psql` on your `PATH`.
+
+### frac deploy
+
+Deploy the current directory using `frac.json`.
+
+```bash
+frac deploy
+```
+
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `--project <id>` | Project ID. Defaults to `frac.json`, then `FRACTAL_PROJECT_ID`. |
+
+The deploy command packages the current directory, respects `.gitignore` when run from a git worktree, excludes common secret and build paths, uploads the bundle to Fractal Cloud, and starts a deployment.
+
+### frac cloud storage
+
+Manage Fractal Cloud Storage.
+
+```bash
+frac cloud storage
+```
+
+#### Enable storage
+
+```bash
+frac cloud storage enable
+```
+
+#### List objects
+
+```bash
+frac cloud storage list --prefix uploads/
+```
+
+#### Upload an object
+
+```bash
+frac cloud storage put ./local.txt remote.txt
+```
+
+#### Download an object
+
+```bash
+frac cloud storage get remote.txt ./local.txt
+```
+
+Cloud Storage subcommands accept `--project`, `--env`, and `--ttl` where relevant.
 
 ---
 
@@ -121,8 +264,12 @@ bun create frac
 | Option | Description |
 |--------|-------------|
 | `-h, --help` | Show help message |
+| `--demo` | Scaffold the richer demo project |
 | `--overwrite` | Remove existing files in target directory without prompting |
-| `--immediate` | Install dependencies and start the development server automatically after scaffolding |
+| `--pm <choice>` | Package manager to use: `bun`, `deno`, `npm`, `pnpm`, or `yarn` |
+| `--skip-skills` | Skip installing coding agent skills |
+| `--start` | Start the development server after scaffolding |
+| `--yes` | Skip prompts and use defaults for unprovided options |
 
 ### Examples
 
@@ -141,7 +288,7 @@ npm create frac@latest my-app
 **Create in current directory, overwrite existing files, and start immediately:**
 
 ```bash
-npm create frac@latest . --overwrite --immediate
+npm create frac@latest . --overwrite --start
 ```
 
 ### What it creates
