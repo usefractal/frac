@@ -88,9 +88,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build docs
-        env:
-          DOCS_SITE: https://usefractal.github.io
-          DOCS_BASE_PATH: /frac
         run: pnpm docs:build
 
       - name: Setup Pages
