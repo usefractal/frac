@@ -48,6 +48,7 @@ import type {
 } from "./middleware.js";
 import { buildMiddlewareChain, getHandlerMaps } from "./middleware.js";
 import { templateHelper } from "./templateHelper.js";
+import { WormholeBuilder, type WormholeConfig } from "./wormhole.js";
 
 const mergeWithUnion = <T extends object, S extends object>(
   target: T,
@@ -316,7 +317,7 @@ export interface McpServerTypes<
 
 type Simplify<T> = { [K in keyof T]: T[K] };
 
-type ShapeOutput<Shape extends ZodRawShapeCompat> = Simplify<
+export type ShapeOutput<Shape extends ZodRawShapeCompat> = Simplify<
   {
     [K in keyof Shape as undefined extends SchemaOutput<Shape[K]>
       ? never
@@ -338,7 +339,7 @@ type ExtractMeta<T> = [Extract<T, { _meta: unknown }>] extends [never]
     ? Simplify<M>
     : unknown;
 
-type AddTool<
+export type AddTool<
   TTools,
   TAtoms extends Record<string, AtomDef>,
   TName extends string,
@@ -410,7 +411,7 @@ export interface FracServerOptions extends ServerOptions {
 /** @deprecated Use {@link FracServerOptions}. */
 export type FractalServerOptions = FracServerOptions;
 
-interface ToolConfig<TInput extends ZodRawShapeCompat | AnySchema> {
+export interface ToolConfig<TInput extends ZodRawShapeCompat | AnySchema> {
   name: string;
   title?: string;
   description?: string;
@@ -459,7 +460,7 @@ export interface ClientHintsMeta {
   "openai/widgetSessionId"?: string;
 }
 
-type ToolHandlerExtra = Omit<
+export type ToolHandlerExtra = Omit<
   RequestHandlerExtra<ServerRequest, ServerNotification>,
   "_meta"
 > & {
@@ -581,6 +582,16 @@ export class McpServer<
     this.fractalComponentDirs = this.resolveFractalComponentDirs(options);
     this.express = express();
     this.express.use(express.json());
+  }
+
+  /**
+   * Create a named wormhole for syncing live state and messages between a tool
+   * handler and its rendered widget.
+   */
+  wormhole<TState extends Record<string, unknown>>(
+    config: WormholeConfig<TState>,
+  ): WormholeBuilder<TState, TTools, TAtoms> {
+    return new WormholeBuilder(this, config);
   }
 
   /**

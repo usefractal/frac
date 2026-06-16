@@ -18,3 +18,11 @@ export { useSetOpenInAppUrl } from "./use-set-open-in-app-url.js";
 export { useToolInfo } from "./use-tool-info.js";
 export { type UserState, useUser } from "./use-user.js";
 export { useViewState } from "./use-view-state.js";
+export {
+  type UseWormholeOptions,
+  type UseWormholeResult,
+  useWormhole,
+  type WormholeConnection,
+  type WormholeEvent,
+  type WormholeStateStatus,
+} from "./use-wormhole.js";

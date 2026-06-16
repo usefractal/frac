@@ -73,6 +73,19 @@ Register a tool. Provide `view` to bind the tool to a view. See [registerTool](/
 server.registerTool(config, handler);
 ```
 
+### wormhole
+
+Create a named live state channel between a tool handler and its widget. See [wormhole](/api-reference/wormhole) for the full API.
+
+```typescript
+const board = server.wormhole({
+  name: "board",
+  stateSchema,
+  defaultState,
+  ttl: 3600,
+});
+```
+
 ### use
 
 Register Express middleware on the underlying HTTP server. Supports optional path filtering.

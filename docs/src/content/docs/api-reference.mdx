@@ -16,6 +16,20 @@ frac exports hooks and utilities from `@usefractal/frac/web` that work across mu
   <Card title="useViewState" icon="floppy-disk" href="/api-reference/use-view-state">
     Persist state across view renders
   </Card>
+  <Card title="useWormhole" icon="radio" href="/api-reference/use-wormhole">
+    Connect a widget to live tool-owned state
+  </Card>
+</CardGroup>
+
+## Server APIs
+
+<CardGroup cols={2}>
+  <Card title="McpServer" icon="server" href="/api-reference/mcp-server">
+    Create your MCP server and register tools
+  </Card>
+  <Card title="wormhole" icon="route" href="/api-reference/wormhole">
+    Create a live state channel between a tool and widget
+  </Card>
 </CardGroup>
 
 ## Context Sync
@@ -107,6 +121,7 @@ import {
   useToolInfo,
   useUser,
   useViewState,
+  useWormhole,
 } from "@usefractal/frac/web";
 ```
 
@@ -118,6 +133,7 @@ frac supports two runtime environments: **Apps SDK** (ChatGPT) and **MCP Apps** 
 |----------------|:--------:|:--------:|-------|
 | [useToolInfo](/api-reference/use-tool-info) | ✅ | ✅ | |
 | [useViewState](/api-reference/use-view-state) | ✅ | ⚠️ | MCP Apps: polyfilled; state doesn't persist across view renders |
+| [useWormhole](/api-reference/use-wormhole) | ✅ | ✅ | Requires a wormhole tool result with private connection metadata |
 | [data-llm](/api-reference/data-llm) | ✅ | ⚠️ | MCP Apps: polyfilled (same limitation as useViewState) |
 | [useCallTool](/api-reference/use-call-tool) | ✅ | ✅ | |
 | [useSendFollowUpMessage](/api-reference/use-send-follow-up-message) | ✅ | ✅ | |
@@ -135,4 +151,3 @@ frac supports two runtime environments: **Apps SDK** (ChatGPT) and **MCP Apps** 
 <Tip>
 Learn more about runtime differences in [Write Once, Run Everywhere](/concepts/write-once-run-everywhere).
 </Tip>
-

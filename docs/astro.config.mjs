@@ -144,8 +144,10 @@ export default defineConfig({
             { label: "CLI", slug: "api-reference/cli" },
             { label: "McpServer", slug: "api-reference/mcp-server" },
             { label: "registerTool", slug: "api-reference/register-tool" },
+            { label: "wormhole", slug: "api-reference/wormhole" },
             { label: "useToolInfo", slug: "api-reference/use-tool-info" },
             { label: "useCallTool", slug: "api-reference/use-call-tool" },
+            { label: "useWormhole", slug: "api-reference/use-wormhole" },
             { label: "useLayout", slug: "api-reference/use-layout" },
             { label: "useUser", slug: "api-reference/use-user" },
             { label: "useDisplayMode", slug: "api-reference/use-display-mode" },
@@ -172,6 +174,7 @@ export default defineConfig({
           items: [
             { label: "Examples", slug: "examples" },
             { label: "Fractals", slug: "examples/fractals" },
+            { label: "Wormhole", slug: "examples/wormhole" },
             { label: "FAQ", slug: "faq" },
           ],
         },

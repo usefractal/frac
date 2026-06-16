@@ -1,0 +1,149 @@
+---
+title: useWormhole
+description: "React hook for connecting a widget to the wormhole returned by its tool call."
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+Use `useWormhole()` inside a widget rendered by a wormhole tool. The hook reads the private connection metadata from the tool result, opens the WebSocket, and keeps React state updated from platform events.
+
+## Import
+
+```tsx
+import { useWormhole } from "@usefractal/frac/web";
+```
+
+## Basic usage
+
+```tsx
+import { useWormhole } from "@usefractal/frac/web";
+
+type BoardState = {
+  selectedId: string | null;
+  filters: {
+    projectId?: string;
+  };
+};
+
+type BoardMessage =
+  | { type: "opened"; projectId: string }
+  | { type: "highlight"; itemId: string };
+
+export default function Board() {
+  const { state, status, tokenExpired, refresh } = useWormhole<
+    BoardState,
+    BoardMessage
+  >();
+
+  if (tokenExpired) {
+    return <button onClick={refresh}>Reconnect</button>;
+  }
+
+  if (status !== "open" || !state) {
+    return <p>Connecting...</p>;
+  }
+
+  return <pre>{JSON.stringify(state, null, 2)}</pre>;
+}
+```
+
+<Info>
+`useWormhole()` expects the server SDK to place the private WebSocket URL in tool result metadata. You normally get this by registering the tool with `server.wormhole(...).widget(...).tool(...)`.
+</Info>
+
+## Parameters
+
+```tsx
+useWormhole<TState, TMessage>(options?)
+```
+
+### `options`
+
+```ts
+type UseWormholeOptions<TState, TMessage> = {
+  reconnect?: boolean;
+  onState?: (state: TState) => void;
+  onMessage?: (message: TMessage) => void;
+  onEvent?: (event: WormholeEvent<TState, TMessage>) => void;
+};
+```
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `reconnect` | `boolean` | Whether to reconnect automatically after a normal disconnect. Defaults to `true`. |
+| `onState` | `(state) => void` | Called when the platform sends a state update. |
+| `onMessage` | `(message) => void` | Called when the platform sends a transient message. |
+| `onEvent` | `(event) => void` | Called for normalized wormhole events, including `pong`. |
+
+## Return value
+
+```ts
+type UseWormholeResult<TState, TMessage> = {
+  name: string | null;
+  state: TState | null;
+  status: "idle" | "connecting" | "open" | "closed" | "expired" | "error";
+  error: Error | null;
+  tokenExpired: boolean;
+  lastMessage: TMessage | null;
+  send(message: TMessage): void;
+  reconnect(): void;
+  refresh(): void;
+  close(): void;
+};
+```
+
+| Field | Description |
+|-------|-------------|
+| `name` | Wormhole name from the connection metadata, or `null` before metadata is available. |
+| `state` | Latest state sent by the platform, or `null` before the first state event. |
+| `status` | Current socket status. |
+| `error` | Last connection or event parsing error. |
+| `tokenExpired` | `true` when the server closes the socket with the token-expired close code. |
+| `lastMessage` | Latest transient message sent through the wormhole. |
+| `send` | Sends a JSON message over the open WebSocket. |
+| `reconnect` | Reopens the current WebSocket URL. |
+| `refresh` | Alias for `reconnect`. Use this for reconnect buttons. |
+| `close` | Closes the current WebSocket. |
+
+## Events
+
+`useWormhole()` normalizes platform wire events before exposing them to your component. Organization and token details stay internal to the connection.
+
+```ts
+type WormholeEvent<TState, TMessage> =
+  | {
+      type: "wormhole:state";
+      state: TState;
+      updatedAt: string;
+    }
+  | {
+      type: "wormhole:message";
+      message: TMessage;
+      sentAt: string;
+    }
+  | {
+      type: "pong";
+      ts: number;
+    };
+```
+
+## Handling token expiry
+
+Wormhole tokens are short-lived. When a token expires, the platform closes the socket and the hook sets `status: "expired"` and `tokenExpired: true`.
+
+```tsx
+const { tokenExpired, refresh } = useWormhole<BoardState, BoardMessage>();
+
+if (tokenExpired) {
+  return <button onClick={refresh}>Reconnect</button>;
+}
+```
+
+If the URL itself is expired, call the original tool again so the server can mint a fresh wormhole token.
+
+## Related
+
+- [wormhole](/api-reference/wormhole)
+- [Wormhole example](/examples/wormhole)
+- [useToolInfo](/api-reference/use-tool-info)
+- [Managing State](/guides/managing-state)
