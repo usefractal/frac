@@ -1,0 +1,38 @@
+{
+  "name": "usefractal",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Command line tools for working with Fractal projects and Fractal Cloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usefractal/frac.git"
+  },
+  "license": "MIT",
+  "bin": {
+    "usefractal": "index.js"
+  },
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "pnpm run test:unit && pnpm run test:format",
+    "test:unit": "pnpm run build",
+    "format": "biome check --write --error-on-warnings",
+    "test:format": "biome ci",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "commander": "^15.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -6,6 +6,7 @@ description: "Complete reference for frac CLI commands"
 import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
 
 frac provides two CLI tools: the main `frac` CLI for development and production workflows, and `create-frac` for bootstrapping new projects.
+Fractal Cloud commands are available through the `usefractal` CLI.
 
 ## frac CLI
 
@@ -84,6 +85,125 @@ frac start
 - Sets `NODE_ENV=production`
 - Serves the MCP endpoint at `http://localhost:3000/mcp`
 - Serves pre-built view assets from `/assets`
+
+---
+
+## usefractal CLI
+
+Use `usefractal` for authentication, project management, deployments, and Fractal Cloud commands.
+
+```bash
+npx usefractal@latest --help
+```
+
+Project-aware commands resolve the project ID in this order:
+
+1. `--project <id>` or `--project-id <id>`
+2. The nearest `frac.json`
+3. `FRACTAL_PROJECT_ID`
+
+### usefractal login
+
+Authenticate with Fractal and store the session.
+
+```bash
+npx usefractal@latest login
+```
+
+### usefractal whoami
+
+Show the current login session.
+
+```bash
+npx usefractal@latest whoami
+```
+
+### usefractal logout
+
+Remove the stored session.
+
+```bash
+npx usefractal@latest logout
+```
+
+### usefractal deploy
+
+Deploy the current directory using `frac.json`.
+
+```bash
+npx usefractal@latest deploy
+```
+
+Use `--wait` to block until the deployment reaches a terminal state:
+
+```bash
+npx usefractal@latest deploy --wait
+```
+
+#### Flags
+
+| Flag | Description |
+|------|-------------|
+| `-p, --project <id>` | Project ID. Defaults to `frac.json`, then `FRACTAL_PROJECT_ID`. |
+| `--project-id <id>` | Project ID. Same resolution as `--project`. |
+| `--name <name>` | Project name when creating a new deployment project. |
+| `-y, --yes` | Use defaults without prompting. |
+| `--wait` | Wait for the deployment to finish. |
+| `--timeout <seconds>` | Maximum seconds to wait. Defaults to `600`. |
+| `--poll-interval <seconds>` | Polling interval in seconds. Defaults to `5`. |
+
+### usefractal deployments list
+
+List deployments for the current project.
+
+```bash
+npx usefractal@latest deployments list
+```
+
+### usefractal deployments get
+
+Show details for a deployment.
+
+```bash
+npx usefractal@latest deployments get <deployment-id>
+```
+
+### usefractal deployments logs
+
+Print logs for a deployment.
+
+```bash
+npx usefractal@latest deployments logs <deployment-id>
+```
+
+### usefractal project show
+
+Print project status and the deployed MCP URL.
+
+```bash
+npx usefractal@latest project show
+```
+
+### usefractal project open
+
+Open the Fractal dashboard for the current `frac.json` project.
+
+```bash
+npx usefractal@latest project open
+```
+
+### usefractal cloud
+
+Manage Fractal Cloud resources.
+
+```bash
+npx usefractal@latest cloud token
+npx usefractal@latest cloud sql
+npx usefractal@latest cloud storage enable
+npx usefractal@latest cloud storage put <local-file> <remote-path>
+npx usefractal@latest cloud storage get <remote-path> [local-file]
+npx usefractal@latest cloud storage list [prefix]
+```
 
 ---
 

@@ -2,6 +2,7 @@ packages:
   - "docs"
   - "packages/frac"
   - "packages/create-frac"
+  - "packages/usefractal"
   - "packages/create-frac/templates/blank"
 
 allowBuilds:

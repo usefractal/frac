@@ -8,10 +8,11 @@ Usage:
 
 Publishes the npm packages in dependency order:
   1. @usefractal/frac
-  2. @usefractal/create-frac
+  2. usefractal
+  3. @usefractal/create-frac
 
 The script temporarily:
-  - sets both package versions to VERSION
+  - sets package versions to VERSION
   - pins template dependencies from workspace:* to ^VERSION
   - copies the root README into packages/frac through prepublishOnly
 
@@ -109,6 +110,8 @@ npm whoami >/dev/null || die "npm is not logged in; run npm login first"
 if [[ "$DRY_RUN" -eq 0 ]]; then
   npm view "@usefractal/frac@$VERSION" version >/dev/null 2>&1 &&
     die "@usefractal/frac@$VERSION already exists on npm"
+  npm view "usefractal@$VERSION" version >/dev/null 2>&1 &&
+    die "usefractal@$VERSION already exists on npm"
   npm view "@usefractal/create-frac@$VERSION" version >/dev/null 2>&1 &&
     die "@usefractal/create-frac@$VERSION already exists on npm"
 fi
@@ -116,6 +119,7 @@ fi
 TMP_DIR="$(mktemp -d)"
 FILES_TO_RESTORE=(
   "packages/frac/package.json"
+  "packages/usefractal/package.json"
   "packages/create-frac/package.json"
   "packages/create-frac/templates/blank/package.json"
 )
@@ -154,6 +158,7 @@ if [[ "$SKIP_VALIDATION" -eq 0 ]]; then
 fi
 
 (cd packages/frac && pnpm pkg set "version=$VERSION")
+(cd packages/usefractal && pnpm pkg set "version=$VERSION")
 (cd packages/create-frac && pnpm pkg set "version=$VERSION")
 
 rm -rf \
@@ -174,10 +179,13 @@ fi
 echo "$ACTION @usefractal/frac@$VERSION with tag '$TAG'"
 (cd packages/frac && pnpm publish "${PUBLISH_ARGS[@]}")
 
+echo "$ACTION usefractal@$VERSION with tag '$TAG'"
+(cd packages/usefractal && pnpm publish "${PUBLISH_ARGS[@]}")
+
 (cd packages/create-frac/templates/blank &&
   pnpm pkg set "dependencies.@usefractal/frac=^$VERSION")
 
 echo "$ACTION @usefractal/create-frac@$VERSION with tag '$TAG'"
 (cd packages/create-frac && pnpm publish "${PUBLISH_ARGS[@]}")
 
-echo "$RESULT @usefractal/frac@$VERSION and @usefractal/create-frac@$VERSION"
+echo "$RESULT @usefractal/frac@$VERSION, usefractal@$VERSION, and @usefractal/create-frac@$VERSION"
