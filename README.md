@@ -47,8 +47,10 @@ Features include:
 
 Install our skill for building MCP apps and ChatGPT apps:
 ```bash
-npx skills add usefractal/frac -s frac
+npx skills add usefractal/frac -s mcp-app-builder
 ```
+Skill metadata: repo `usefractal/frac`, path `skills/mcp-app-builder/SKILL.md`, name `mcp-app-builder`.
+
 Once installed, ask your agent "What skills do you have?" to confirm, then try:
 
 - _Create a new MCP app_
