@@ -4,11 +4,11 @@
   "description": "frac is a framework for building ChatGPT and MCP Apps",
   "type": "module",
   "scripts": {
-    "build": "pnpm --filter @usefractal/frac build && pnpm --filter @usefractal/create-frac build",
+    "build": "pnpm --filter @usefractal/frac build && pnpm --filter @usefractal/create-frac build && pnpm --filter usefractal build",
     "test": "pnpm run test:unit && pnpm run test:format",
-    "format": "pnpm --filter @usefractal/frac format && pnpm --filter @usefractal/create-frac format",
-    "test:unit": "pnpm --filter @usefractal/frac test:unit && pnpm --filter @usefractal/create-frac test:unit",
-    "test:format": "pnpm --filter @usefractal/frac test:format && pnpm --filter @usefractal/create-frac test:format",
+    "format": "pnpm --filter @usefractal/frac format && pnpm --filter @usefractal/create-frac format && pnpm --filter usefractal format",
+    "test:unit": "pnpm --filter @usefractal/frac test:unit && pnpm --filter @usefractal/create-frac test:unit && pnpm --filter usefractal test:unit",
+    "test:format": "pnpm --filter @usefractal/frac test:format && pnpm --filter @usefractal/create-frac test:format && pnpm --filter usefractal test:format",
     "docs:dev": "pnpm --dir docs dev",
     "docs:build": "pnpm --dir docs build",
     "docs:preview": "pnpm --dir docs preview"

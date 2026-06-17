@@ -55,8 +55,16 @@ jobs:
         working-directory: ./packages/create-frac
         run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
+      - name: Set usefractal version
+        working-directory: ./packages/usefractal
+        run: pnpm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
       - name: Publish frac
         working-directory: ./packages/frac
+        run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
+
+      - name: Publish usefractal
+        working-directory: ./packages/usefractal
         run: pnpm publish --tag ${{ steps.version.outputs.tag }} --access public --provenance --no-git-checks
 
       - name: Pin blank template frac dep for publish
