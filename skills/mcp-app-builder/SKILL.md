@@ -1,5 +1,5 @@
 ---
-name: frac-app-builder
+name: mcp-app-builder
 description: |
   Guide developers through creating and updating MCP apps.
   Covers the full lifecycle: brainstorming ideas against UX guidelines, bootstrapping projects, implementing tools/views, debugging, running dev servers, and testing with MCP App-capable clients.
