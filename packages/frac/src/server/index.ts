@@ -60,3 +60,12 @@ export {
   normalizeContent,
 } from "./server.js";
 export { viewsDevServer } from "./viewsDevServer.js";
+export type {
+  WormholeConfig,
+  WormholeConnection,
+  WormholeToken,
+  WormholeTokenOptions,
+  WormholeToolContext,
+  WormholeWidgetConfig,
+} from "./wormhole.js";
+export { WormholeBuilder } from "./wormhole.js";

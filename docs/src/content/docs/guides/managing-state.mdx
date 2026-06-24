@@ -19,6 +19,9 @@ What kind of state do you need?
 ├── Simple key/value state? → useViewState
 │   (Form inputs, selected items, flags — persisted by the host)
 │
+├── Need server/tool-owned live state? → wormhole + useWormhole
+│   (Tool initializes state, widget receives updates over a WebSocket)
+│
 └── Complex state with actions? → createStore
     (Multiple related values, computed state, async actions)
 ```
@@ -207,6 +210,37 @@ function ProductListView() {
 
 - `useViewState` persists the selection
 - `data-llm` tells the model what the user sees
+
+## Wormholes
+
+Use a wormhole when state belongs to a tool or backend process, but the rendered widget needs to keep receiving updates after the initial tool result.
+
+```ts
+const board = server.wormhole({
+  name: "board",
+  stateSchema,
+  defaultState: { selectedId: null, filters: {} },
+});
+
+board.tool(config, async (wormhole, args) => {
+  wormhole.state.filters.projectId = args.projectId;
+  return "Opened board";
+});
+```
+
+In the widget, connect with `useWormhole()`:
+
+```tsx
+const { state, status } = useWormhole<BoardState>();
+```
+
+Choose a wormhole when:
+
+- The tool should initialize or update state on the server side
+- Multiple state updates may arrive after the widget renders
+- The widget needs a live connection rather than host-persisted local state
+
+See the [wormhole API reference](/api-reference/wormhole), [useWormhole](/api-reference/use-wormhole), and the [Wormhole example](/examples/wormhole).
 
 ## When State Persists
 

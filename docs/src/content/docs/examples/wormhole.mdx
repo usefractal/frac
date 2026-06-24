@@ -1,0 +1,145 @@
+---
+title: Wormhole
+description: "Build a live widget that receives state from a tool through a wormhole."
+---
+
+import { Card, CardGroup, CodeGroup, Info, Note, Step, Steps, Tip, Warning } from "@components/docs-ui";
+
+This example creates a small project board widget. The tool receives a `projectId`, writes it into wormhole state, and renders a React view that connects with `useWormhole()`.
+
+Use this pattern when the tool initializes the view, but the widget should continue receiving state or messages after the initial render.
+
+## Project structure
+
+```txt
+src/
+  server.ts
+  views/
+    Board.tsx
+```
+
+## Server
+
+Create a named wormhole, attach a widget, and register a tool.
+
+```ts src/server.ts
+import { McpServer } from "@usefractal/frac/server";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "wormhole-board",
+  version: "1.0.0",
+});
+
+const board = server.wormhole({
+  name: "board",
+  stateSchema: z.object({
+    selectedId: z.string().nullable(),
+    filters: z.object({
+      projectId: z.string().optional(),
+    }),
+  }),
+  defaultState: {
+    selectedId: null,
+    filters: {},
+  },
+  ttl: 3600,
+});
+
+board
+  .widget({
+    component: "Board",
+    description: "A live project board.",
+  })
+  .tool(
+    {
+      name: "show_board",
+      description: "Open a live project board.",
+      inputSchema: {
+        projectId: z.string(),
+      },
+    },
+    async (wormhole, args) => {
+      wormhole.state.selectedId = null;
+      wormhole.state.filters.projectId = args.projectId;
+
+      await wormhole.message.send({
+        type: "opened",
+        projectId: args.projectId,
+      });
+
+      return `Opened board for ${args.projectId}`;
+    },
+  );
+
+export { server };
+```
+
+The handler mutates `wormhole.state` directly. After the handler resolves, frac validates the state and syncs it through the platform.
+
+<Note>
+If you're deploying on Fractal, the runtime provides what wormholes need. If you're deploying somewhere else, set `FRACTAL_TOKEN` in the server environment.
+
+```bash
+FRACTAL_TOKEN=...
+```
+</Note>
+
+## Widget
+
+The widget reads the wormhole URL from private tool metadata and connects automatically.
+
+```tsx src/views/Board.tsx
+import { useWormhole } from "@usefractal/frac/web";
+
+type BoardState = {
+  selectedId: string | null;
+  filters: {
+    projectId?: string;
+  };
+};
+
+type BoardMessage = {
+  type: "opened";
+  projectId: string;
+};
+
+export default function Board() {
+  const { state, status, lastMessage, tokenExpired, refresh } = useWormhole<
+    BoardState,
+    BoardMessage
+  >();
+
+  if (tokenExpired) {
+    return <button onClick={refresh}>Reconnect</button>;
+  }
+
+  if (status !== "open" || !state) {
+    return <p>Connecting...</p>;
+  }
+
+  return (
+    <main>
+      <h2>Project {state.filters.projectId}</h2>
+      <p>Selected item: {state.selectedId ?? "None"}</p>
+      {lastMessage ? <p>Last message: {lastMessage.type}</p> : null}
+    </main>
+  );
+}
+```
+
+## How it works
+
+1. The model calls `show_board` with a `projectId`.
+2. The tool mutates `wormhole.state`.
+3. frac syncs the state to the platform after the handler returns.
+4. The tool result renders `Board`.
+5. `useWormhole()` opens the private WebSocket URL from tool metadata.
+6. The widget receives the latest state and future messages.
+
+## Related
+
+- [wormhole](/api-reference/wormhole)
+- [useWormhole](/api-reference/use-wormhole)
+- [Managing State](/guides/managing-state)
+- [registerTool](/api-reference/register-tool)
