@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://docs.usefractal.dev">
-    <img alt="frac, the full-stack React framework for MCP apps and MCP servers" src="https://raw.githubusercontent.com/usefractal/frac/main/docs/images/github-banner.png" width="100%" />
+    <img alt="frac, the full-stack React framework for MCP apps and MCP servers" src="docs/images/github-banner.png" width="100%" />
   </a>
 </p>
 
